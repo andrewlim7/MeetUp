@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24235FB50C4B185E895372FE /* Pods_MeetUpAssessment.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */; };
 		C7E88FD21F1C6FC800CA4478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FD11F1C6FC800CA4478 /* AppDelegate.swift */; };
 		C7E88FD41F1C6FC800CA4478 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FD31F1C6FC800CA4478 /* ViewController.swift */; };
 		C7E88FD71F1C6FC800CA4478 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FD51F1C6FC800CA4478 /* Main.storyboard */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AF3395E2D08A3F0BA09C7998 /* Pods-MeetUpAssessment.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetUpAssessment.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment.debug.xcconfig"; sourceTree = "<group>"; };
 		C7E88FCE1F1C6FC800CA4478 /* MeetUpAssessment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetUpAssessment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E88FD11F1C6FC800CA4478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7E88FD31F1C6FC800CA4478 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -22,6 +24,8 @@
 		C7E88FD81F1C6FC800CA4478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7E88FDB1F1C6FC800CA4478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C7E88FDD1F1C6FC800CA4478 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetUpAssessment.release.xcconfig"; path = "Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment.release.xcconfig"; sourceTree = "<group>"; };
+		F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MeetUpAssessment.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +33,37 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24235FB50C4B185E895372FE /* Pods_MeetUpAssessment.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		37B71B337F05C5E9CCDEB7A5 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				AF3395E2D08A3F0BA09C7998 /* Pods-MeetUpAssessment.debug.xcconfig */,
+				E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		B649FCF81F3F4051A7804A51 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		C7E88FC51F1C6FC800CA4478 = {
 			isa = PBXGroup;
 			children = (
 				C7E88FD01F1C6FC800CA4478 /* MeetUpAssessment */,
 				C7E88FCF1F1C6FC800CA4478 /* Products */,
+				37B71B337F05C5E9CCDEB7A5 /* Pods */,
+				B649FCF81F3F4051A7804A51 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,9 +95,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C7E88FE01F1C6FC800CA4478 /* Build configuration list for PBXNativeTarget "MeetUpAssessment" */;
 			buildPhases = (
+				982170353AD762998A6AFFEF /* [CP] Check Pods Manifest.lock */,
 				C7E88FCA1F1C6FC800CA4478 /* Sources */,
 				C7E88FCB1F1C6FC800CA4478 /* Frameworks */,
 				C7E88FCC1F1C6FC800CA4478 /* Resources */,
+				238474573CFD3FF7B0EC6212 /* [CP] Embed Pods Frameworks */,
+				42E7BBB67B9AA585AAE4311E /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -130,6 +157,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		238474573CFD3FF7B0EC6212 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		42E7BBB67B9AA585AAE4311E /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		982170353AD762998A6AFFEF /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C7E88FCA1F1C6FC800CA4478 /* Sources */ = {
@@ -258,6 +333,7 @@
 		};
 		C7E88FE11F1C6FC800CA4478 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = AF3395E2D08A3F0BA09C7998 /* Pods-MeetUpAssessment.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = MeetUpAssessment/Info.plist;
@@ -270,6 +346,7 @@
 		};
 		C7E88FE21F1C6FC800CA4478 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = MeetUpAssessment/Info.plist;
