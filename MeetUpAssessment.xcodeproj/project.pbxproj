@@ -9,21 +9,53 @@
 /* Begin PBXBuildFile section */
 		24235FB50C4B185E895372FE /* Pods_MeetUpAssessment.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */; };
 		C7E88FD21F1C6FC800CA4478 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FD11F1C6FC800CA4478 /* AppDelegate.swift */; };
-		C7E88FD41F1C6FC800CA4478 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FD31F1C6FC800CA4478 /* ViewController.swift */; };
 		C7E88FD71F1C6FC800CA4478 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FD51F1C6FC800CA4478 /* Main.storyboard */; };
 		C7E88FD91F1C6FC800CA4478 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FD81F1C6FC800CA4478 /* Assets.xcassets */; };
 		C7E88FDC1F1C6FC800CA4478 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FDA1F1C6FC800CA4478 /* LaunchScreen.storyboard */; };
+		C7E88FE41F1C767F00CA4478 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FE31F1C767F00CA4478 /* GoogleService-Info.plist */; };
+		C7E88FEC1F1C778000CA4478 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7E88FEB1F1C778000CA4478 /* CoreLocation.framework */; };
+		C7E88FEE1F1C778C00CA4478 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7E88FED1F1C778C00CA4478 /* MapKit.framework */; };
+		C7E88FF01F1C77AF00CA4478 /* LoginVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FEF1F1C77AF00CA4478 /* LoginVC.swift */; };
+		C7E88FF21F1C77C000CA4478 /* RegisterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FF11F1C77C000CA4478 /* RegisterVC.swift */; };
+		C7E88FF41F1C77D700CA4478 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FF31F1C77D700CA4478 /* MainVC.swift */; };
+		C7E88FF61F1C781400CA4478 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FF51F1C781400CA4478 /* UserProfile.swift */; };
+		C7E88FF81F1C7A1200CA4478 /* Auth.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7E88FF71F1C7A1200CA4478 /* Auth.storyboard */; };
+		C7E88FFA1F1CA16500CA4478 /* CircleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FF91F1CA16500CA4478 /* CircleView.swift */; };
+		C7E88FFC1F1CA99F00CA4478 /* AddVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FFB1F1CA99F00CA4478 /* AddVC.swift */; };
+		C7E88FFE1F1CA9B000CA4478 /* SearchVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FFD1F1CA9B000CA4478 /* SearchVC.swift */; };
+		C7E890001F1CAA6800CA4478 /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E88FFF1F1CAA6800CA4478 /* ProfileVC.swift */; };
+		C7E890021F1CAA7400CA4478 /* EditProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890011F1CAA7400CA4478 /* EditProfileVC.swift */; };
+		C7E890041F1CAF1800CA4478 /* ListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890031F1CAF1800CA4478 /* ListCell.swift */; };
+		C7E890061F1D11E900CA4478 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890051F1D11E900CA4478 /* SearchCell.swift */; };
+		C7E8900A1F1DABC300CA4478 /* SelectedEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890091F1DABC300CA4478 /* SelectedEventVC.swift */; };
+		C7E8900C1F1DADF300CA4478 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E8900B1F1DADF300CA4478 /* EventData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AF3395E2D08A3F0BA09C7998 /* Pods-MeetUpAssessment.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetUpAssessment.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment.debug.xcconfig"; sourceTree = "<group>"; };
 		C7E88FCE1F1C6FC800CA4478 /* MeetUpAssessment.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MeetUpAssessment.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7E88FD11F1C6FC800CA4478 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		C7E88FD31F1C6FC800CA4478 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		C7E88FD61F1C6FC800CA4478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		C7E88FD81F1C6FC800CA4478 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C7E88FDB1F1C6FC800CA4478 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C7E88FDD1F1C6FC800CA4478 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C7E88FE31F1C767F00CA4478 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C7E88FEB1F1C778000CA4478 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		C7E88FED1F1C778C00CA4478 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		C7E88FEF1F1C77AF00CA4478 /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginVC.swift; sourceTree = "<group>"; };
+		C7E88FF11F1C77C000CA4478 /* RegisterVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RegisterVC.swift; sourceTree = "<group>"; };
+		C7E88FF31F1C77D700CA4478 /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
+		C7E88FF51F1C781400CA4478 /* UserProfile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		C7E88FF71F1C7A1200CA4478 /* Auth.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Auth.storyboard; sourceTree = "<group>"; };
+		C7E88FF91F1CA16500CA4478 /* CircleView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleView.swift; sourceTree = "<group>"; };
+		C7E88FFB1F1CA99F00CA4478 /* AddVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddVC.swift; sourceTree = "<group>"; };
+		C7E88FFD1F1CA9B000CA4478 /* SearchVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchVC.swift; sourceTree = "<group>"; };
+		C7E88FFF1F1CAA6800CA4478 /* ProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
+		C7E890011F1CAA7400CA4478 /* EditProfileVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditProfileVC.swift; sourceTree = "<group>"; };
+		C7E890031F1CAF1800CA4478 /* ListCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListCell.swift; sourceTree = "<group>"; };
+		C7E890051F1D11E900CA4478 /* SearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
+		C7E890091F1DABC300CA4478 /* SelectedEventVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectedEventVC.swift; sourceTree = "<group>"; };
+		C7E8900B1F1DADF300CA4478 /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
 		E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetUpAssessment.release.xcconfig"; path = "Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment.release.xcconfig"; sourceTree = "<group>"; };
 		F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MeetUpAssessment.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -33,6 +65,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7E88FEE1F1C778C00CA4478 /* MapKit.framework in Frameworks */,
+				C7E88FEC1F1C778000CA4478 /* CoreLocation.framework in Frameworks */,
 				24235FB50C4B185E895372FE /* Pods_MeetUpAssessment.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -52,6 +86,8 @@
 		B649FCF81F3F4051A7804A51 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7E88FED1F1C778C00CA4478 /* MapKit.framework */,
+				C7E88FEB1F1C778000CA4478 /* CoreLocation.framework */,
 				F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */,
 			);
 			name = Frameworks;
@@ -79,13 +115,59 @@
 			isa = PBXGroup;
 			children = (
 				C7E88FD11F1C6FC800CA4478 /* AppDelegate.swift */,
-				C7E88FD31F1C6FC800CA4478 /* ViewController.swift */,
-				C7E88FD51F1C6FC800CA4478 /* Main.storyboard */,
+				C7E88FE61F1C769B00CA4478 /* Storyboard */,
+				C7E88FE81F1C76AC00CA4478 /* Controller */,
+				C7E88FE71F1C76A100CA4478 /* View */,
+				C7E88FE51F1C769000CA4478 /* Model */,
 				C7E88FD81F1C6FC800CA4478 /* Assets.xcassets */,
-				C7E88FDA1F1C6FC800CA4478 /* LaunchScreen.storyboard */,
 				C7E88FDD1F1C6FC800CA4478 /* Info.plist */,
+				C7E88FE31F1C767F00CA4478 /* GoogleService-Info.plist */,
 			);
 			path = MeetUpAssessment;
+			sourceTree = "<group>";
+		};
+		C7E88FE51F1C769000CA4478 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C7E88FF51F1C781400CA4478 /* UserProfile.swift */,
+				C7E8900B1F1DADF300CA4478 /* EventData.swift */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		C7E88FE61F1C769B00CA4478 /* Storyboard */ = {
+			isa = PBXGroup;
+			children = (
+				C7E88FF71F1C7A1200CA4478 /* Auth.storyboard */,
+				C7E88FD51F1C6FC800CA4478 /* Main.storyboard */,
+				C7E88FDA1F1C6FC800CA4478 /* LaunchScreen.storyboard */,
+			);
+			name = Storyboard;
+			sourceTree = "<group>";
+		};
+		C7E88FE71F1C76A100CA4478 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				C7E88FF91F1CA16500CA4478 /* CircleView.swift */,
+				C7E890031F1CAF1800CA4478 /* ListCell.swift */,
+				C7E890051F1D11E900CA4478 /* SearchCell.swift */,
+			);
+			name = View;
+			sourceTree = "<group>";
+		};
+		C7E88FE81F1C76AC00CA4478 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				C7E88FEF1F1C77AF00CA4478 /* LoginVC.swift */,
+				C7E88FF11F1C77C000CA4478 /* RegisterVC.swift */,
+				C7E88FF31F1C77D700CA4478 /* MainVC.swift */,
+				C7E88FFB1F1CA99F00CA4478 /* AddVC.swift */,
+				C7E88FFD1F1CA9B000CA4478 /* SearchVC.swift */,
+				C7E88FFF1F1CAA6800CA4478 /* ProfileVC.swift */,
+				C7E890011F1CAA7400CA4478 /* EditProfileVC.swift */,
+				C7E890091F1DABC300CA4478 /* SelectedEventVC.swift */,
+			);
+			name = Controller;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -123,6 +205,7 @@
 				TargetAttributes = {
 					C7E88FCD1F1C6FC800CA4478 = {
 						CreatedOnToolsVersion = 8.3.2;
+						DevelopmentTeam = DQCNUZZSN6;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -151,6 +234,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				C7E88FDC1F1C6FC800CA4478 /* LaunchScreen.storyboard in Resources */,
+				C7E88FE41F1C767F00CA4478 /* GoogleService-Info.plist in Resources */,
+				C7E88FF81F1C7A1200CA4478 /* Auth.storyboard in Resources */,
 				C7E88FD91F1C6FC800CA4478 /* Assets.xcassets in Resources */,
 				C7E88FD71F1C6FC800CA4478 /* Main.storyboard in Resources */,
 			);
@@ -211,7 +296,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C7E88FD41F1C6FC800CA4478 /* ViewController.swift in Sources */,
+				C7E890021F1CAA7400CA4478 /* EditProfileVC.swift in Sources */,
+				C7E890061F1D11E900CA4478 /* SearchCell.swift in Sources */,
+				C7E8900C1F1DADF300CA4478 /* EventData.swift in Sources */,
+				C7E88FFE1F1CA9B000CA4478 /* SearchVC.swift in Sources */,
+				C7E8900A1F1DABC300CA4478 /* SelectedEventVC.swift in Sources */,
+				C7E88FFA1F1CA16500CA4478 /* CircleView.swift in Sources */,
+				C7E88FF21F1C77C000CA4478 /* RegisterVC.swift in Sources */,
+				C7E890001F1CAA6800CA4478 /* ProfileVC.swift in Sources */,
+				C7E88FF41F1C77D700CA4478 /* MainVC.swift in Sources */,
+				C7E890041F1CAF1800CA4478 /* ListCell.swift in Sources */,
+				C7E88FF61F1C781400CA4478 /* UserProfile.swift in Sources */,
+				C7E88FF01F1C77AF00CA4478 /* LoginVC.swift in Sources */,
+				C7E88FFC1F1CA99F00CA4478 /* AddVC.swift in Sources */,
 				C7E88FD21F1C6FC800CA4478 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -336,6 +433,7 @@
 			baseConfigurationReference = AF3395E2D08A3F0BA09C7998 /* Pods-MeetUpAssessment.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DQCNUZZSN6;
 				INFOPLIST_FILE = MeetUpAssessment/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewlim7.MeetUpAssessment;
@@ -349,6 +447,7 @@
 			baseConfigurationReference = E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DQCNUZZSN6;
 				INFOPLIST_FILE = MeetUpAssessment/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.andrewlim7.MeetUpAssessment;
@@ -376,6 +475,7 @@
 				C7E88FE21F1C6FC800CA4478 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
