@@ -70,6 +70,8 @@ extension MainVC : UITableViewDataSource, UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? ListCell
             else { return UITableViewCell() }
         
@@ -83,6 +85,8 @@ extension MainVC : UITableViewDataSource, UITableViewDelegate {
         
         
         return cell
+        
+        
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

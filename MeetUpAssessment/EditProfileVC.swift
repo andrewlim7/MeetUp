@@ -21,7 +21,7 @@ class EditProfileVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        naviBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 64)
+        //naviBar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: 64)
         // Do any additional setup after loading the view.
     }
 

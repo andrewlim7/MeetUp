@@ -13,7 +13,7 @@ import FirebaseAuth
 import FirebaseStorage
 import FirebaseDatabase
 
-class AddVC: UIViewController {
+class AddVC: UIViewController,UITextFieldDelegate {
 
     @IBOutlet weak var cancelButton: UIBarButtonItem!{
         didSet{
@@ -28,12 +28,37 @@ class AddVC: UIViewController {
         }
     }
     
-    @IBOutlet weak var titleTextField: UITextField!
-    @IBOutlet weak var descriptionTextField: UITextField!
-    @IBOutlet weak var startAtTextField: UITextField!
-    @IBOutlet weak var endAtTextField: UITextField!
-    @IBOutlet weak var dateTextField: UITextField!
-    @IBOutlet weak var categoryTextField: UITextField!
+    @IBOutlet weak var titleTextField: UITextField!{
+        didSet{
+            titleTextField.delegate = self
+        }
+    }
+    @IBOutlet weak var descriptionTextField: UITextField!{
+        didSet{
+            descriptionTextField.delegate = self
+        }
+    }
+    
+    @IBOutlet weak var startAtTextField: UITextField!{
+        didSet{
+            startAtTextField.delegate = self
+        }
+    }
+    @IBOutlet weak var endAtTextField: UITextField!{
+        didSet{
+            endAtTextField.delegate = self
+        }
+    }
+    @IBOutlet weak var dateTextField: UITextField!{
+        didSet{
+            dateTextField.delegate = self
+        }
+    }
+    @IBOutlet weak var categoryTextField: UITextField!{
+        didSet{
+            categoryTextField.delegate = self
+        }
+    }
     @IBOutlet weak var imageView: UIImageView!
     
     @IBOutlet weak var uploadImageButton: UIButton!{
@@ -55,11 +80,14 @@ class AddVC: UIViewController {
     let ref = Database.database().reference()
     let locationManager = CLLocationManager()
     let selfAnnotation = MKPointAnnotation()
-    var selectedAnnotation: MKPointAnnotation?
+    var selectedAnnotation = MKPointAnnotation()
+    var locationAddress : String?
+    var getLocationLat : Double?
+    var getLocationLong : Double?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         setupSpinner()
         getNameFromDB()
         
@@ -69,6 +97,8 @@ class AddVC: UIViewController {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddVC.imagedTapped(sender:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -78,6 +108,16 @@ class AddVC: UIViewController {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        titleTextField.resignFirstResponder()
+        descriptionTextField.resignFirstResponder()
+        startAtTextField.resignFirstResponder()
+        endAtTextField.resignFirstResponder()
+        dateTextField.resignFirstResponder()
+        categoryTextField.resignFirstResponder()
+        return true
     }
     
     func imagedTapped(sender: UIGestureRecognizer){
@@ -183,7 +223,10 @@ class AddVC: UIViewController {
                                     "eventDate" : validDate,
                                     "eventCategory" : validCategory,
                                     "imageURL": validImageURL,
-                                    "timestamp": now.timeIntervalSince1970]
+                                    "timestamp": now.timeIntervalSince1970,
+                                    "locationAddress": self.locationAddress ?? "",
+                                    "lat": self.getLocationLat ?? "",
+                                    "long": self.getLocationLong ?? ""]
         
         let ref = Database.database().reference().child("events").childByAutoId()
         ref.setValue(param)
@@ -236,6 +279,32 @@ class AddVC: UIViewController {
         alertController.addAction(cancelAction)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func loadPlaceMark(location : CLLocation) {
+        let geocoder = CLGeocoder()
+        geocoder.reverseGeocodeLocation(location) { (placemarks, error) in
+            if let validError = error{
+                print("Geocode Error: \(validError.localizedDescription)")
+            }
+            
+            
+            if let placemark = placemarks?.first{
+                var textArray : [String] = []
+                for item in [placemark.name, placemark.thoroughfare, placemark.locality] {
+                    if let name = item { textArray.append(name) }
+                }
+                
+                let finalString = textArray.joined(separator: ", ")
+                
+                self.locationAddress = finalString
+                print(finalString)
+                
+//                print(placemark.name ?? "")
+//                print(placemark.thoroughfare ?? "")
+//                print(placemark.locality ?? "")
+            }
+        }
     }
 
     
@@ -312,10 +381,17 @@ extension AddVC : MKMapViewDelegate{
             
             else { return }
             
-            let coordinates = CLLocationCoordinate2D(latitude: lat, longitude: long)
+            if let displayAddressOnPin = locationAddress {
+                self.selectedAnnotation.title = "\(displayAddressOnPin)"
+            } else {
+                self.selectedAnnotation.title = "Selected Location"
+            }
             
+            let coordinates = CLLocation(latitude: lat, longitude: long)
+            self.loadPlaceMark(location: coordinates)
             
-            self.selectedAnnotation?.title = "Selected location"
+            getLocationLat = lat
+            getLocationLong = long
             
         default:
             break
@@ -326,14 +402,15 @@ extension AddVC : MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
         print("Did Select")
         
-//        guard let centerCoor = view.annotation?.coordinate else { return }
-//        
-//        let span = MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
-//        
-//        let region = MKCoordinateRegionMake(centerCoor, span)
-//        mapView.setRegion(region, animated: true)
+        guard let centerCoor = view.annotation?.coordinate else { return }
         
-        selectedAnnotation = view.annotation as? MKPointAnnotation
+        let span = MKCoordinateSpan(latitudeDelta: 0.03, longitudeDelta: 0.03)
+        
+        let region = MKCoordinateRegionMake(centerCoor, span)
+        mapView.setRegion(region, animated: true)
+        
+        selectedAnnotation = view.annotation as! MKPointAnnotation
+        
     }
 }
 

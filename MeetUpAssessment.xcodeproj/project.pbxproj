@@ -29,6 +29,7 @@
 		C7E890061F1D11E900CA4478 /* SearchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890051F1D11E900CA4478 /* SearchCell.swift */; };
 		C7E8900A1F1DABC300CA4478 /* SelectedEventVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E890091F1DABC300CA4478 /* SelectedEventVC.swift */; };
 		C7E8900C1F1DADF300CA4478 /* EventData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E8900B1F1DADF300CA4478 /* EventData.swift */; };
+		C7E8900E1F1E7F6400CA4478 /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7E8900D1F1E7F6400CA4478 /* UserCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +57,7 @@
 		C7E890051F1D11E900CA4478 /* SearchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchCell.swift; sourceTree = "<group>"; };
 		C7E890091F1DABC300CA4478 /* SelectedEventVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectedEventVC.swift; sourceTree = "<group>"; };
 		C7E8900B1F1DADF300CA4478 /* EventData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventData.swift; sourceTree = "<group>"; };
+		C7E8900D1F1E7F6400CA4478 /* UserCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		E6EF5C997B9626CEF310B455 /* Pods-MeetUpAssessment.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetUpAssessment.release.xcconfig"; path = "Pods/Target Support Files/Pods-MeetUpAssessment/Pods-MeetUpAssessment.release.xcconfig"; sourceTree = "<group>"; };
 		F51AC03FF09690CF9075D669 /* Pods_MeetUpAssessment.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MeetUpAssessment.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -151,6 +153,7 @@
 				C7E88FF91F1CA16500CA4478 /* CircleView.swift */,
 				C7E890031F1CAF1800CA4478 /* ListCell.swift */,
 				C7E890051F1D11E900CA4478 /* SearchCell.swift */,
+				C7E8900D1F1E7F6400CA4478 /* UserCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -304,6 +307,7 @@
 				C7E88FFA1F1CA16500CA4478 /* CircleView.swift in Sources */,
 				C7E88FF21F1C77C000CA4478 /* RegisterVC.swift in Sources */,
 				C7E890001F1CAA6800CA4478 /* ProfileVC.swift in Sources */,
+				C7E8900E1F1E7F6400CA4478 /* UserCell.swift in Sources */,
 				C7E88FF41F1C77D700CA4478 /* MainVC.swift in Sources */,
 				C7E890041F1CAF1800CA4478 /* ListCell.swift in Sources */,
 				C7E88FF61F1C781400CA4478 /* UserProfile.swift in Sources */,

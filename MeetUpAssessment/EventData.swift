@@ -21,8 +21,10 @@ class EventData {
     var endAt: String
     var imageURL: URL?
     var category : String
+    var address : String
     var lat : Double
     var long : Double
+    
     
     init?(snapshot: DataSnapshot){
         
@@ -38,6 +40,7 @@ class EventData {
             let validStartAt = dictionary["eventStartAt"] as? String,
             let validEndAt = dictionary["eventEndAt"] as? String,
             let validCategory = dictionary["eventCategory"] as? String,
+            let validAddress = dictionary["locationAddress"] as? String,
             let validLat = dictionary["lat"] as? Double,
             let validLong = dictionary["long"] as? Double
         else { return nil }
@@ -50,6 +53,7 @@ class EventData {
         startAt = validStartAt
         endAt = validEndAt
         category = validCategory
+        address = validAddress
         lat = validLat
         long = validLong
         
