@@ -8,16 +8,18 @@
 
 import Foundation
 import FirebaseDatabase
+import FirebaseAuth
 
 class UserProfile{
     
-    var userID : String?
+    var userID : String
     var name: String?
     var email: String?
     var profileImageURL : URL?
     var provider : String?
     var facebookID : String?
-    var event : [String:Any]?
+    var eventCreated : [String:Any]?
+    var eventJoined : [String:Any]?
     
     init?(snapshot: DataSnapshot){
         
@@ -25,28 +27,38 @@ class UserProfile{
         
         guard
             let dictionary = snapshot.value as? [String:Any],
-            let validName = dictionary["name"] as? String,
-            let validUserID = dictionary["userID"] as? String,
-            let validEmail = dictionary["email"] as? String,
-            let validProvider = dictionary["provider"] as? String,
-            let validFID = dictionary["id"] as? String,
-            let validEvent = dictionary["event"] as? [String:Any]
+            let validName = dictionary["name"] as? String
             else { return nil }
         
         name = validName
-        userID = validUserID
-        email = validEmail
-        provider = validProvider
-        facebookID = validFID
-        event = validEvent
-    
-        if let validImageURL = dictionary["profileImageURL"] as? String{
+        
+        if let validEmail = dictionary["email"] as? String {
+            email = validEmail
+        }
+        
+        if let validFID = dictionary["id"] as? String {
+            facebookID = validFID
+        }
+        
+        if let validImageURL = dictionary["profileImageURL"] as? String{ 
             profileImageURL = URL(string: validImageURL)
         }
         
+        if let validEventCreated = dictionary["eventCreated"] as? [String:Any] {
+            eventCreated = validEventCreated
+        }
+        
+        if let validEventJoined = dictionary["eventJoined"] as? [String:Any]{
+            eventJoined = validEventJoined
+        }
+        
+        if let validProvider = Auth.auth().currentUser?.providerData{
+            for item in validProvider{
+                provider = item.providerID
+            }
+        }
+        
+
+        
     }
-    
-    
-    
-    
 }

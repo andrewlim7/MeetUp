@@ -36,24 +36,35 @@ class SelectedEventVC: UIViewController {
             mapView.delegate = self
         }
     }
+    @IBOutlet weak var categoryLabel: UILabel!
     
     var getEventDetail : EventData?
     var isJoined : Bool = false
+    var currentUserID = Auth.auth().currentUser?.uid
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        titleLabel.text = getEventDetail?.title
-        descriptionLabel.text = getEventDetail?.description
-        startAtLabel.text = getEventDetail?.startAt
-        endAtLabel.text = getEventDetail?.endAt
+        if getEventDetail?.userID == currentUserID {
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(SelectedEventVC.editEvent))
+            
+        }
+
+        titleLabel.text = getEventDetail?.eventTitle
+        descriptionLabel.text = getEventDetail?.eventDescription
+        startAtLabel.text = getEventDetail?.eventStartAt
+        endAtLabel.text = getEventDetail?.eventEndAt
+        dateLabel.text = getEventDetail?.eventDate
+        categoryLabel.text = "Category: \(getEventDetail?.eventCategory ?? "")"
         HostedByLabel.text = "Hosted by \(getEventDetail?.name ?? "")"
         imageView.sd_setImage(with: getEventDetail?.imageURL)
         locationLabel.text = getEventDetail?.address
         
-        
         let destination = MKPointAnnotation()
-        destination.coordinate = CLLocationCoordinate2DMake((getEventDetail?.lat)!, (getEventDetail?.long)!)
+        if let coorLat = getEventDetail?.lat, let coorLong = getEventDetail?.long {
+            destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
+        }
         destination.title = getEventDetail?.address
         mapView.addAnnotation(destination)
         
@@ -61,31 +72,76 @@ class SelectedEventVC: UIViewController {
         let region = MKCoordinateRegionMake(destination.coordinate, span)
         mapView.setRegion(region, animated: true)
         
+        joinButtonStatus()
+        
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = false
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func editEvent(){
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let nextVC = storyboard.instantiateViewController(withIdentifier: "AddVC") as! AddVC
+        
+        nextVC.getEditEventDetail = getEventDetail
+        
+        present(nextVC, animated: true, completion: nil)
+    }
+    
+    func joinButtonStatus(){
+        let ref = Database.database().reference()
+        
+        if let eventID = getEventDetail?.eid {
+            ref.child("events").child(eventID).child("participants").observe(.value, with: { (snapshot) in
+                if let uid = self.currentUserID {
+                    if snapshot.hasChild(uid){
+                        self.joinButton.setTitle("Joined", for: .normal)
+                        self.joinButton.backgroundColor = UIColor.red
+                        self.isJoined = true
+                    } else {
+                        self.joinButton.setTitle("Join", for: .normal)
+                        self.joinButton.backgroundColor = UIColor.green
+                    }
+                }
+            })
+        }
+    }
 
     func didTappedJoinButton(_ sender: Any){
         if isJoined == false {
             
-            
-            let ref = Database.database().reference().child("events").child("")
-            
-            let joiningRef = Database.database().reference().child("users")
-            
-            isJoined = true
-            
-            
+            if let eventID = getEventDetail?.eid {
+                //rmb to do uid = currentUserID
+                let ref = Database.database().reference().child("events").child(eventID).child("participants")
+                ref.updateChildValues([currentUserID!: true])
+                
+                let userRef = Database.database().reference().child("users").child(currentUserID!).child("eventJoined").child(eventID)
+                userRef.updateChildValues([currentUserID!: true])
+                
+                isJoined = true
+            }
         } else {
             
-            
-            isJoined = false
+            if let eventID = getEventDetail?.eid {
+                
+                if let uid = self.currentUserID {
+                    let ref = Database.database().reference().child("events").child(eventID).child("participants")
+                    ref.child(uid).removeValue()
+                    
+                    let userRef = Database.database().reference().child("users").child(uid).child("eventJoined").child(eventID)
+                    userRef.child(uid).removeValue()
+                    
+                    isJoined = false
+                }
+            }
         }
     }
-    
     
 }
 

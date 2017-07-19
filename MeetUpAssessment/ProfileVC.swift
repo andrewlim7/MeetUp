@@ -31,7 +31,12 @@ class ProfileVC: UIViewController {
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var providerLabel: UILabel!
     
-    @IBOutlet weak var segmentControl: UISegmentedControl!
+    @IBOutlet weak var segmentControl: UISegmentedControl!{
+        didSet{
+            segmentControl.addTarget(self, action: #selector(didTappedSegmentControl(_:)), for: .valueChanged)
+            segmentControl.selectedSegmentIndex = 0
+        }
+    }
     
     @IBOutlet weak var tableView: UITableView!{
         didSet{
@@ -41,16 +46,54 @@ class ProfileVC: UIViewController {
     }
     
     var displayUserDetail : UserProfile?
-    var displayUserEvent : [EventData] = []
-//    var currentUserID = Auth.auth().currentUser?.uid
+    var displayUserEventCreated : [EventData] = []
+    var displayUserRSVP : [EventData] = []
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//    var provider = Auth.auth().currentUser?.providerID
-//        print(provider)
-        fetchEvents()
-        
+        displayUserEventCreated = []
+        fetchEventsCreated()
+        obeserveDelete()
+
+    }
+    
+    func obeserveDelete() {
+        if let uid = Auth.auth().currentUser?.uid {
+            let ref = Database.database().reference()
+            ref.child("users").child(uid).child("eventJoined").observe(.childRemoved, with: { (snapshot) in
+                if let deletedIndex = self.displayUserRSVP.index(where: { (eventID) -> Bool in
+                    eventID.eid == snapshot.key
+                }) {
+                    self.displayUserRSVP.remove(at: deletedIndex)
+                    DispatchQueue.main.async {
+                        self.tableView.reloadData()
+                    }
+                    
+                } else {
+                    return
+                }
+            })
+        }
+    }
+    
+    
+    func didTappedSegmentControl(_ sender:Any){
+        switch segmentControl.selectedSegmentIndex
+        {
+        case 0:
+            displayUserEventCreated = []
+            obeserveDelete()
+            fetchEventsCreated()
+            tableView.reloadData()
+        case 1:
+            displayUserRSVP = []
+            obeserveDelete()
+            fetchRSVP()
+            tableView.reloadData()
+        default:
+            break;
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,48 +101,51 @@ class ProfileVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func fetchEvents(){
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
+    }
+    
+    func fetchRSVP(){
+     
+        if let currentUserID = Auth.auth().currentUser?.uid {
+            let ref = Database.database().reference()
+            ref.child("users").child(currentUserID).observe(.value, with: { (snapshot) in
+                if let userRSVP = UserProfile(snapshot: snapshot){
+                    
+                    guard let eventJoined = userRSVP.eventJoined else { return }
+                    
+                    self.displayUserRSVP = []
+                    
+                    for(key,_) in eventJoined {
+                        
+                        self.getRSVP(key)
+                        
+                    }
+                }
+            })
+            
+            
+        }
+        
+    }
+    
+    func getRSVP(_ eventID: String) {
+        let ref = Database.database().reference()
+        ref.child("events").child(eventID).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let rsvpDetail = EventData(snapshot: snapshot){
+                self.displayUserRSVP.append(rsvpDetail)
+                self.displayUserRSVP.sort(by: {$0.timestamp > $1.timestamp})
+                self.tableView.reloadData()
+            }
+        })
+    }
+    
+    func fetchEventsCreated(){
         
         if let currentUserID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
             ref.child("users").child(currentUserID).observe(.value, with: { (snapshot) in
-                
-//                guard let dictionary = snapshot.value as? [String:Any] else {
-//                    return
-//                }
-//                
-//                let name = dictionary["name"] as? String
-//                let email = dictionary["email"] as? String
-//                let provider = dictionary["provider"] as? String
-////                let profileImageURL = dictionary["profileImageURL"] as? String
-//                
-//                if let profileURL = dictionary["profileImageURL"] as? String {
-//                    let displayUrl = NSURL(string : profileURL)
-//                    
-//                    self.imageView.sd_setImage(with: displayUrl! as URL)
-//                }
-//                
-//                if let fbProfileID = dictionary["id"] as? String {
-//                    
-//                    let fbProfileURL = NSURL(string: "https://graph.facebook.com/\(fbProfileID)/picture?type=large&return_ssl_resources=1")
-//                    
-//                    self.imageView.sd_setImage(with: fbProfileURL! as URL)
-//                }
-//
-//                self.nameLabel.text = name
-//                self.emailLabel.text = email
-//                self.providerLabel.text = provider
-//
-//                
-//                //self.displayUserEvent = []
-//                
-//                guard let eventDictionary = dictionary["event"] as? [String : Any] else {return}
-//
-//                for (key,_) in eventDictionary {
-//                    self.getEvent(key)
-//                }
-                
-                
+
                 if let userProfile = UserProfile(snapshot: snapshot){
 
                     self.nameLabel.text = userProfile.name
@@ -117,19 +163,21 @@ class ProfileVC: UIViewController {
                         self.imageView.sd_setImage(with: fbProfileURL! as URL)
                     }
                     
-                    guard let eventDictionary = userProfile.event else {return}
+                    guard let eventDictionary = userProfile.eventCreated else {return}
                     
-                    self.displayUserEvent = []
+                    self.displayUserEventCreated = []
                     
                     for (key,_) in eventDictionary {
                         self.getEvent(key)
                     }
                 }
-            })
-            
+            }) { (error) in
+                
+                print(error.localizedDescription)
+                
+                return
+            }
         }
-        
-        
     }
     
     func getEvent(_ eventID: String) {
@@ -137,8 +185,8 @@ class ProfileVC: UIViewController {
         let ref = Database.database().reference()
         ref.child("events").child(eventID).observeSingleEvent(of: .value, with: { (snapshot) in
             if let eventDetail = EventData(snapshot: snapshot){
-                self.displayUserEvent.append(eventDetail)
-                self.displayUserEvent.sort(by: {$0.timestamp > $1.timestamp})
+                self.displayUserEventCreated.append(eventDetail)
+                self.displayUserEventCreated.sort(by: {$0.timestamp > $1.timestamp})
                 self.tableView.reloadData()
             }
         })
@@ -188,25 +236,62 @@ class ProfileVC: UIViewController {
 extension ProfileVC : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return displayUserEvent.count
+        
+        if segmentControl.selectedSegmentIndex == 0 {
+            return displayUserEventCreated.count
+        } else {
+            return displayUserRSVP.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let currentRow = displayUserEvent[indexPath.row]
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! UserCell
         
+        if segmentControl.selectedSegmentIndex == 0 {
+            let currentRow = displayUserEventCreated[indexPath.row]
+            
+            cell.cellTitleLabel.text = currentRow.eventTitle
+            cell.cellDescriptionLabel.text = currentRow.eventDescription
+            cell.cellImageView.sd_setImage(with: currentRow.imageURL)
+            
+            
+            return cell
+            
+        } else {
+            
+            let currentRow = displayUserRSVP[indexPath.row]
+            
+            cell.cellTitleLabel.text = currentRow.eventTitle
+            cell.cellDescriptionLabel.text = currentRow.eventDescription
+            cell.cellImageView.sd_setImage(with: currentRow.imageURL)
+            
+            return cell
+            
+        }
         
-        cell.cellTitleLabel.text = currentRow.title
-        cell.cellDescriptionLabel.text = currentRow.description
-        cell.cellImageView.sd_setImage(with: currentRow.imageURL)
-        
-        
-        return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+        let nextVC = storyboard.instantiateViewController(withIdentifier: "SelectedEventVC") as! SelectedEventVC
+        
+        if segmentControl.selectedSegmentIndex == 0 {
+            let currentRow = displayUserEventCreated[indexPath.row]
+            
+            nextVC.getEventDetail = currentRow
+            
+            self.navigationController?.pushViewController(nextVC, animated: true)
+            
+        } else {
+            
+            let currentRow = displayUserRSVP[indexPath.row]
+            
+            nextVC.getEventDetail = currentRow
+            
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        }
     }
 }
 

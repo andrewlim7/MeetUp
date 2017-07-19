@@ -39,6 +39,10 @@ class MainVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = false
+    }
+    
     func didTappedAddButton(_ sender : Any){
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         guard let addVC = storyboard.instantiateViewController(withIdentifier: "AddVC") as? AddVC else { return }
@@ -78,8 +82,8 @@ extension MainVC : UITableViewDataSource, UITableViewDelegate {
         let currentRow = EventDetails[indexPath.row]
         
         
-        cell.listTitleLabel.text = currentRow.title
-        cell.listDescriptionLabel.text = currentRow.description
+        cell.listTitleLabel.text = currentRow.eventTitle
+        cell.listDescriptionLabel.text = currentRow.eventDescription
         
         cell.listImageView.sd_setImage(with: currentRow.imageURL)
         

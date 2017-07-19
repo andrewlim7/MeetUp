@@ -15,15 +15,16 @@ class EventData {
     var name : String
     var userID : String
     var timestamp : Date
-    var title : String
-    var description : String
-    var startAt: String
-    var endAt: String
+    var eventTitle : String
+    var eventDescription : String?
+    var eventDate: String?
+    var eventStartAt: String
+    var eventEndAt: String
     var imageURL: URL?
-    var category : String
-    var address : String
-    var lat : Double
-    var long : Double
+    var eventCategory : String
+    var address : String?
+    var lat : Double?
+    var long : Double?
     
     
     init?(snapshot: DataSnapshot){
@@ -39,24 +40,33 @@ class EventData {
             let validDescription = dictionary["eventDescription"] as? String,
             let validStartAt = dictionary["eventStartAt"] as? String,
             let validEndAt = dictionary["eventEndAt"] as? String,
-            let validCategory = dictionary["eventCategory"] as? String,
-            let validAddress = dictionary["locationAddress"] as? String,
-            let validLat = dictionary["lat"] as? Double,
-            let validLong = dictionary["long"] as? Double
+            let validDate = dictionary["eventDate"] as? String,
+            let validCategory = dictionary["eventCategory"] as? String
         else { return nil }
         
         name = validName
         userID = validUserID
         timestamp = Date(timeIntervalSince1970: validTimestamp)
-        title = validTitle
-        description = validDescription
-        startAt = validStartAt
-        endAt = validEndAt
-        category = validCategory
-        address = validAddress
-        lat = validLat
-        long = validLong
+        eventTitle = validTitle
+        eventDescription = validDescription
+        eventStartAt = validStartAt
+        eventEndAt = validEndAt
+        eventDate = validDate
+        eventCategory = validCategory
         
+        
+        if let validAddress = dictionary["locationAddress"] as? String{
+            address = validAddress
+        }
+        
+        if let validLat = dictionary["lat"] as? Double{
+            lat = validLat
+        }
+        
+        if let validLong = dictionary["long"] as? Double{
+            long = validLong
+        }
+    
         if let validImageURL = dictionary["imageURL"] as? String{
             imageURL = URL(string: validImageURL)
         }

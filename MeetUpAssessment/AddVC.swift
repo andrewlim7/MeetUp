@@ -73,6 +73,8 @@ class AddVC: UIViewController,UITextFieldDelegate {
         }
     }
     
+    @IBOutlet weak var naviBar: UINavigationBar!
+    
     let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
     let currentUserID = Auth.auth().currentUser?.uid
     var getName : String = ""
@@ -84,6 +86,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
     var locationAddress : String?
     var getLocationLat : Double?
     var getLocationLong : Double?
+    var getEditEventDetail : EventData?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,6 +101,34 @@ class AddVC: UIViewController,UITextFieldDelegate {
         tapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(tapGestureRecognizer)
         
+        if getEditEventDetail == nil {
+           
+            
+        } else {
+            naviBar.items?.first?.title = "Edit event detail"
+            
+            naviBar?.items?.first?.rightBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(AddVC.deleteEvent))
+            
+            titleTextField.text = getEditEventDetail?.eventTitle
+            descriptionTextField.text = getEditEventDetail?.eventDescription
+            startAtTextField.text = getEditEventDetail?.eventStartAt
+            endAtTextField.text = getEditEventDetail?.eventEndAt
+            categoryTextField.text = getEditEventDetail?.eventCategory
+            dateTextField.text = getEditEventDetail?.eventDate
+            imageView.sd_setImage(with: getEditEventDetail?.imageURL)
+            
+            let destination = MKPointAnnotation()
+            if let coorLat = getEditEventDetail?.lat, let coorLong = getEditEventDetail?.long {
+                destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
+            }
+            destination.title = getEditEventDetail?.address
+            mapView.addAnnotation(destination)
+            
+            let span = MKCoordinateSpanMake(0.03, 0.03)
+            let region = MKCoordinateRegionMake(destination.coordinate, span)
+            mapView.setRegion(region, animated: true)
+        }
+        
         
     }
 
@@ -108,6 +139,37 @@ class AddVC: UIViewController,UITextFieldDelegate {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
+    }
+    
+    func deleteEvent(_ sender: Any){
+        let alertController = UIAlertController(title: "Are you sure?", message: "You cannot retrieve this post after being deleted", preferredStyle: .alert)
+        
+        let delete = UIAlertAction(title: "Delete", style: .destructive) { (action) in
+            if let eventID = self.getEditEventDetail?.eid {
+                let eventRef = Database.database().reference().child("events").child(eventID)
+                eventRef.removeValue()
+                
+                if let currentUserID = self.getEditEventDetail?.userID {
+                    let userRef = Database.database().reference().child("users").child(currentUserID).child("eventCreated")
+                    userRef.removeValue()
+                    
+                    let userEventJoined = Database.database().reference().child("users").child(currentUserID).child("eventJoined")
+                    userEventJoined.child(eventID).removeValue()
+                }
+            }
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
+            let mainVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! MainVC
+            
+            self.present(mainVC, animated: true, completion: nil)
+        }
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(delete)
+        alertController.addAction(cancel)
+        
+        present(alertController, animated: true, completion: nil)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -234,8 +296,14 @@ class AddVC: UIViewController,UITextFieldDelegate {
         let currentEID = ref.key
         print(currentEID)
         
-        let updateUserPID = Database.database().reference().child("users").child(uid).child("event")
-        updateUserPID.updateChildValues([currentEID: true])
+        let updateEventCreated = Database.database().reference().child("users").child(uid).child("eventCreated")
+        updateEventCreated.updateChildValues([currentEID:true])
+        
+        let updateEventJoined = Database.database().reference().child("users").child(uid).child("eventJoined").child(currentEID)
+        updateEventJoined.updateChildValues([uid:true])
+        
+        let updateEventParticipants = Database.database().reference().child("events").child(currentEID).child("participants")
+        updateEventParticipants.updateChildValues([uid:true])
         
     }
     
@@ -351,6 +419,7 @@ extension AddVC : CLLocationManagerDelegate{
         let span = MKCoordinateSpanMake(0.03, 0.03)
         let region = MKCoordinateRegion(center: locValue, span: span)
         mapView.setRegion(region, animated: true)
+        
         
     }
     
