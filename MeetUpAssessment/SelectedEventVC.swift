@@ -22,7 +22,6 @@ class SelectedEventVC: UIViewController {
         }
     }
 
-    @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var startAtLabel: UILabel!
 
     @IBOutlet weak var endAtLabel: UILabel!
@@ -51,11 +50,10 @@ class SelectedEventVC: UIViewController {
             
         }
 
-        titleLabel.text = getEventDetail?.eventTitle
+        titleLabel.text = "Title: \(getEventDetail?.eventTitle ?? "")"
         descriptionLabel.text = getEventDetail?.eventDescription
-        startAtLabel.text = getEventDetail?.eventStartAt
-        endAtLabel.text = getEventDetail?.eventEndAt
-        dateLabel.text = getEventDetail?.eventDate
+        startAtLabel.text = "Event start at: \(getEventDetail?.eventStartAt ?? "")"
+        endAtLabel.text = "Event start at: \(getEventDetail?.eventEndAt ?? "")"
         categoryLabel.text = "Category: \(getEventDetail?.eventCategory ?? "")"
         HostedByLabel.text = "Hosted by \(getEventDetail?.name ?? "")"
         imageView.sd_setImage(with: getEventDetail?.imageURL)
@@ -64,9 +62,9 @@ class SelectedEventVC: UIViewController {
         let destination = MKPointAnnotation()
         if let coorLat = getEventDetail?.lat, let coorLong = getEventDetail?.long {
             destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
+            destination.title = getEventDetail?.address
+            mapView.addAnnotation(destination)
         }
-        destination.title = getEventDetail?.address
-        mapView.addAnnotation(destination)
         
         let span = MKCoordinateSpanMake(0.03, 0.03)
         let region = MKCoordinateRegionMake(destination.coordinate, span)
@@ -148,10 +146,12 @@ class SelectedEventVC: UIViewController {
 extension SelectedEventVC : MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        let annotationView = MKPinAnnotationView()
-        annotationView.canShowCallout = true
+        let pinView = MKPinAnnotationView()
+        pinView.annotation = annotation
         
-        return annotationView
+        pinView.canShowCallout = true
+        pinView.isDraggable = true
+        return pinView
     }
     
     

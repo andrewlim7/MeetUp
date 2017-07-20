@@ -77,13 +77,18 @@ extension SearchVC : UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        filteredEventData = searchText.isEmpty ? storeEventData : storeEventData.filter{ (item: EventData) -> Bool in
-            return item.eventTitle.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-        }
-        
-        if searchText.characters.count < 1 {
-            searchBar.showsCancelButton = false
-            searchBar.resignFirstResponder()
+        if segmentControl.selectedSegmentIndex == 0 {
+            filteredEventData = searchText.isEmpty ? storeEventData : storeEventData.filter{ (item: EventData) -> Bool in
+                return item.eventTitle.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            }
+        } else if segmentControl.selectedSegmentIndex == 1 {
+            filteredEventData = searchText.isEmpty ? storeEventData : storeEventData.filter{ (item: EventData) -> Bool in
+                return item.eventStartAt.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            }
+        } else {
+            filteredEventData = searchText.isEmpty ? storeEventData : storeEventData.filter{ (item: EventData) -> Bool in
+                return item.eventCategory.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+            }
         }
         
         tableView.reloadData()
@@ -92,6 +97,7 @@ extension SearchVC : UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchBar.text = nil
         searchBar.showsCancelButton = false
+        searchBar.resignFirstResponder()
         searchBar.endEditing(true)
     }
     

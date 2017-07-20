@@ -29,7 +29,8 @@ class ProfileVC: UIViewController {
     
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
-    @IBOutlet weak var providerLabel: UILabel!
+    @IBOutlet weak var providerImageView: UIImageView!
+
     
     @IBOutlet weak var segmentControl: UISegmentedControl!{
         didSet{
@@ -45,17 +46,18 @@ class ProfileVC: UIViewController {
         }
     }
     
-    var displayUserDetail : UserProfile?
     var displayUserEventCreated : [EventData] = []
     var displayUserRSVP : [EventData] = []
+    var providerStatus : String?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         displayUserEventCreated = []
         fetchEventsCreated()
-        obeserveDelete()
-
+        //obeserveDelete()
+        
+        checkEditButtonStatus()
     }
     
     func obeserveDelete() {
@@ -77,18 +79,34 @@ class ProfileVC: UIViewController {
         }
     }
     
+    func checkEditButtonStatus(){
+        if let checkProvider = Auth.auth().currentUser?.providerData{
+            for item in checkProvider{
+                providerStatus = item.providerID
+            }
+        }
+        
+        if providerStatus == "facebook.com"{
+            editButton.isHidden = true
+            editButton.isEnabled = false
+        }
+    }
     
     func didTappedSegmentControl(_ sender:Any){
         switch segmentControl.selectedSegmentIndex
         {
         case 0:
             displayUserEventCreated = []
-            obeserveDelete()
+            let ref = Database.database().reference()
+            ref.child("events").removeAllObservers()
+            //obeserveDelete()
             fetchEventsCreated()
             tableView.reloadData()
         case 1:
             displayUserRSVP = []
-            obeserveDelete()
+            let ref = Database.database().reference()
+            ref.child("events").removeAllObservers()
+            //obeserveDelete()
             fetchRSVP()
             tableView.reloadData()
         default:
@@ -123,8 +141,6 @@ class ProfileVC: UIViewController {
                     }
                 }
             })
-            
-            
         }
         
     }
@@ -150,7 +166,13 @@ class ProfileVC: UIViewController {
 
                     self.nameLabel.text = userProfile.name
                     self.emailLabel.text = userProfile.email
-                    self.providerLabel.text = userProfile.provider
+                    
+                    if userProfile.provider == "facebook.com" {
+                        self.providerImageView.image = UIImage(named: "facebook")
+
+                    } else {
+                        self.providerImageView.image = UIImage(named: "email")
+                    }
                     
                     if let profileURL = userProfile.profileImageURL {
                         self.imageView.sd_setImage(with: profileURL as URL)
@@ -197,7 +219,9 @@ class ProfileVC: UIViewController {
     func didTappedEditButton(_ sender : Any){
         
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-        guard let editProfileVC = storyboard.instantiateViewController(withIdentifier: "EditProfileVC") as? EditProfileVC else { return }
+        let editProfileVC = storyboard.instantiateViewController(withIdentifier: "EditProfileVC") as! EditProfileVC
+        
+        editProfileVC.displayUserImage = imageView.image
         
         present(editProfileVC, animated: true, completion: nil)
     }
@@ -246,7 +270,9 @@ extension ProfileVC : UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! UserCell
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as? UserCell else {
+            return UITableViewCell()
+        }
         
         if segmentControl.selectedSegmentIndex == 0 {
             let currentRow = displayUserEventCreated[indexPath.row]

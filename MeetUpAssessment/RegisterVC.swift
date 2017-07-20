@@ -109,7 +109,7 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
             warningAlert(warningMessage: "Please enter your email")
             
         } else if password != confirmPassword {
-            warningAlert(warningMessage: "Please enter your password and confrim password correctly!")
+            warningAlert(warningMessage: "Please enter your password and confirm password correctly!")
             
         } else if isImageSelected == false {
             warningAlert(warningMessage: "Please select profile picture!")

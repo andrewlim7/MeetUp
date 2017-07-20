@@ -17,7 +17,6 @@ class EventData {
     var timestamp : Date
     var eventTitle : String
     var eventDescription : String?
-    var eventDate: String?
     var eventStartAt: String
     var eventEndAt: String
     var imageURL: URL?
@@ -40,7 +39,6 @@ class EventData {
             let validDescription = dictionary["eventDescription"] as? String,
             let validStartAt = dictionary["eventStartAt"] as? String,
             let validEndAt = dictionary["eventEndAt"] as? String,
-            let validDate = dictionary["eventDate"] as? String,
             let validCategory = dictionary["eventCategory"] as? String
         else { return nil }
         
@@ -51,7 +49,6 @@ class EventData {
         eventDescription = validDescription
         eventStartAt = validStartAt
         eventEndAt = validEndAt
-        eventDate = validDate
         eventCategory = validCategory
         
         

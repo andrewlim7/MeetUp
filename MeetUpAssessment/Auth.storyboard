@@ -24,15 +24,6 @@
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ZfR-XI-dYi">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lets Meet Up" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jdL-Ly-uBk">
-                                <rect key="frame" x="0.0" y="20" width="375" height="85"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="85" id="gGR-mu-Q0I"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="N7a-Nu-ESH">
                                 <rect key="frame" x="8" y="159" width="359" height="30"/>
                                 <nil key="textColor"/>
@@ -83,11 +74,9 @@
                         <constraints>
                             <constraint firstItem="gsg-WO-OtS" firstAttribute="leading" secondItem="fxW-Ub-dQs" secondAttribute="leading" constant="8" id="0LG-aY-1aQ"/>
                             <constraint firstItem="2dk-IT-ywO" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="20b-JB-TNf"/>
-                            <constraint firstItem="gsg-WO-OtS" firstAttribute="top" secondItem="jdL-Ly-uBk" secondAttribute="bottom" constant="25" id="3Yn-Uk-066"/>
                             <constraint firstAttribute="trailing" secondItem="pfH-p9-G8K" secondAttribute="trailing" constant="8" id="48g-W1-Nal"/>
                             <constraint firstItem="pfH-p9-G8K" firstAttribute="leading" secondItem="gsg-WO-OtS" secondAttribute="leading" id="4iR-rM-jDJ"/>
                             <constraint firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" constant="8" id="8d5-6j-eOh"/>
-                            <constraint firstItem="jdL-Ly-uBk" firstAttribute="top" secondItem="16M-9g-pgw" secondAttribute="bottom" id="9QE-NQ-Lqs"/>
                             <constraint firstItem="hKj-Ys-9vl" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="I77-UJ-9Kf"/>
                             <constraint firstItem="6Fv-3p-ke1" firstAttribute="top" secondItem="ZfR-XI-dYi" secondAttribute="bottom" id="IOy-SV-86p"/>
                             <constraint firstItem="pfH-p9-G8K" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="Jpy-DY-cfl"/>
@@ -99,8 +88,8 @@
                             <constraint firstItem="gkp-ci-rcP" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="bz5-9i-BNN"/>
                             <constraint firstItem="2dk-IT-ywO" firstAttribute="leading" secondItem="gsg-WO-OtS" secondAttribute="leading" id="cBV-EB-FCi"/>
                             <constraint firstItem="gkp-ci-rcP" firstAttribute="top" secondItem="hKj-Ys-9vl" secondAttribute="bottom" constant="30" id="d9q-eH-EHc"/>
+                            <constraint firstItem="gsg-WO-OtS" firstAttribute="top" secondItem="16M-9g-pgw" secondAttribute="bottom" constant="110" id="eGC-pi-Q1E"/>
                             <constraint firstItem="zq3-cO-F0j" firstAttribute="leading" secondItem="gsg-WO-OtS" secondAttribute="leading" id="fth-ku-Ecv"/>
-                            <constraint firstAttribute="trailing" secondItem="jdL-Ly-uBk" secondAttribute="trailing" id="iL0-NP-HTe"/>
                             <constraint firstItem="zq3-cO-F0j" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="iYa-sR-ZUt"/>
                             <constraint firstItem="2dk-IT-ywO" firstAttribute="top" secondItem="zq3-cO-F0j" secondAttribute="bottom" constant="8" id="j36-xB-UIl"/>
                             <constraint firstItem="N7a-Nu-ESH" firstAttribute="trailing" secondItem="gsg-WO-OtS" secondAttribute="trailing" id="k0p-vh-qyP"/>
@@ -110,7 +99,6 @@
                             <constraint firstItem="zq3-cO-F0j" firstAttribute="top" secondItem="N7a-Nu-ESH" secondAttribute="bottom" constant="25" id="neU-fn-l6Q"/>
                             <constraint firstItem="N7a-Nu-ESH" firstAttribute="leading" secondItem="gsg-WO-OtS" secondAttribute="leading" id="oSJ-OR-Ezy"/>
                             <constraint firstItem="pfH-p9-G8K" firstAttribute="leading" secondItem="fxW-Ub-dQs" secondAttribute="leading" constant="8" id="tUk-xW-yzF"/>
-                            <constraint firstItem="jdL-Ly-uBk" firstAttribute="leading" secondItem="fxW-Ub-dQs" secondAttribute="leading" id="u3t-VN-3vR"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="bJO-FT-KYa"/>
