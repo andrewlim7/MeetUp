@@ -11,7 +11,7 @@ import MapKit
 import FirebaseAuth
 import FirebaseDatabase
 
-class SelectedEventVC: UIViewController {
+class SelectedEventVC: UIViewController, EventDelegate {
     
     @IBOutlet weak var imageView: UIImageView!
     
@@ -37,9 +37,12 @@ class SelectedEventVC: UIViewController {
     }
     @IBOutlet weak var categoryLabel: UILabel!
     
+    @IBOutlet weak var totalParticipantLabel: UILabel!
     var getEventDetail : EventData?
+    var storeTempEventID : String?
     var isJoined : Bool = false
     var currentUserID = Auth.auth().currentUser?.uid
+    let destination = MKPointAnnotation()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,35 +50,53 @@ class SelectedEventVC: UIViewController {
         if getEventDetail?.userID == currentUserID {
             
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(SelectedEventVC.editEvent))
-            
         }
-
-        titleLabel.text = "Title: \(getEventDetail?.eventTitle ?? "")"
-        descriptionLabel.text = getEventDetail?.eventDescription
-        startAtLabel.text = "Event start at: \(getEventDetail?.eventStartAt ?? "")"
-        endAtLabel.text = "Event start at: \(getEventDetail?.eventEndAt ?? "")"
-        categoryLabel.text = "Category: \(getEventDetail?.eventCategory ?? "")"
-        HostedByLabel.text = "Hosted by \(getEventDetail?.name ?? "")"
-        imageView.sd_setImage(with: getEventDetail?.imageURL)
-        locationLabel.text = getEventDetail?.address
-        
-        let destination = MKPointAnnotation()
-        if let coorLat = getEventDetail?.lat, let coorLong = getEventDetail?.long {
-            destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
-            destination.title = getEventDetail?.address
-            mapView.addAnnotation(destination)
-        }
-        
-        let span = MKCoordinateSpanMake(0.03, 0.03)
-        let region = MKCoordinateRegionMake(destination.coordinate, span)
-        mapView.setRegion(region, animated: true)
         
         joinButtonStatus()
-        
+        participantsCount()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = false
+        
+        if storeTempEventID == getEventDetail?.eid {
+            
+            let alertController = UIAlertController(title: "Error", message: "This event has removed", preferredStyle: .alert)
+            let ok = UIAlertAction(title: "Ok", style: .default, handler: { (UIAlertAction) in
+                self.navigationController?.popViewController(animated: true)
+            })
+            alertController.addAction(ok)
+            
+            present(alertController, animated: true, completion: nil)
+            
+        } else {
+            mapView.removeAnnotation(destination)
+            
+            //to observe user's detail by providing the eventID
+            let ref = Database.database().reference().child("events")
+            ref.child((getEventDetail?.eid)!).observeSingleEvent(of: .value, with: { (snapshot) in
+                if let data = EventData(snapshot: snapshot){
+                    self.titleLabel.text = "Title: \(data.eventTitle )"
+                    self.descriptionLabel.text = data.eventDescription
+                    self.startAtLabel.text = "Event start at: \(data.eventStartAt )"
+                    self.endAtLabel.text = "Event start at: \(data.eventEndAt )"
+                    self.categoryLabel.text = "Category: \(data.eventCategory )"
+                    self.HostedByLabel.text = "Hosted by \(data.name )"
+                    self.imageView.sd_setImage(with: data.imageURL)
+                    self.locationLabel.text = data.address
+                    
+                    if let coorLat = data.lat, let coorLong = data.long {
+                        self.destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
+                        self.destination.title = data.address
+                        self.mapView.addAnnotation(self.destination)
+                    }
+                    
+                    let span = MKCoordinateSpanMake(0.03, 0.03)
+                    let region = MKCoordinateRegionMake(self.destination.coordinate, span)
+                    self.mapView.setRegion(region, animated: true)
+                }
+            })
+       }
     }
 
     override func didReceiveMemoryWarning() {
@@ -83,9 +104,25 @@ class SelectedEventVC: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    func participantsCount(){
+        
+        let ref = Database.database().reference()
+        if let eventID = getEventDetail?.eid{
+            ref.child("events").child(eventID).child("participants").observe(.value, with: { (snapshot) in
+                
+                var count = 0
+                count += Int(snapshot.childrenCount)
+                self.totalParticipantLabel.text = "\(count) participant(s) are going"
+                
+            })
+        }
+    }
+
+    
     func editEvent(){
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
         let nextVC = storyboard.instantiateViewController(withIdentifier: "AddVC") as! AddVC
+        nextVC.delegate = self
         
         nextVC.getEditEventDetail = getEventDetail
         
@@ -115,15 +152,15 @@ class SelectedEventVC: UIViewController {
         if isJoined == false {
             
             if let eventID = getEventDetail?.eid {
-                //rmb to do uid = currentUserID
                 let ref = Database.database().reference().child("events").child(eventID).child("participants")
                 ref.updateChildValues([currentUserID!: true])
-                
-                let userRef = Database.database().reference().child("users").child(currentUserID!).child("eventJoined").child(eventID)
-                userRef.updateChildValues([currentUserID!: true])
+        
+                let userRef = Database.database().reference().child("users").child(currentUserID!).child("eventJoined")
+                userRef.updateChildValues([eventID: true])
                 
                 isJoined = true
             }
+            
         } else {
             
             if let eventID = getEventDetail?.eid {
@@ -132,8 +169,8 @@ class SelectedEventVC: UIViewController {
                     let ref = Database.database().reference().child("events").child(eventID).child("participants")
                     ref.child(uid).removeValue()
                     
-                    let userRef = Database.database().reference().child("users").child(uid).child("eventJoined").child(eventID)
-                    userRef.child(uid).removeValue()
+                    let userRef = Database.database().reference().child("users").child(uid).child("eventJoined")
+                    userRef.child(eventID).removeValue()
                     
                     isJoined = false
                 }
@@ -141,16 +178,29 @@ class SelectedEventVC: UIViewController {
         }
     }
     
+    func refreshDeletedEvent(eventID: String) {
+        storeTempEventID = eventID
+        dismiss(animated: true, completion: nil)
+    }
+    
 }
 
 extension SelectedEventVC : MKMapViewDelegate {
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
-        let pinView = MKPinAnnotationView()
-        pinView.annotation = annotation
+        let pinIdentifier = "pin"
         
-        pinView.canShowCallout = true
-        pinView.isDraggable = true
+        let pinView = mapView.dequeueReusableAnnotationView(withIdentifier: pinIdentifier)
+        if pinView == nil {
+            let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: pinIdentifier)
+            pinView.canShowCallout = true
+            
+            return pinView
+            
+        } else {
+            pinView?.annotation = annotation
+        }
+        
         return pinView
     }
     

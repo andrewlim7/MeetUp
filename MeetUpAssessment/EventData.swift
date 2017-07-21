@@ -24,7 +24,7 @@ class EventData {
     var address : String?
     var lat : Double?
     var long : Double?
-    
+    var participants : [String:Any]?
     
     init?(snapshot: DataSnapshot){
         
@@ -68,6 +68,9 @@ class EventData {
             imageURL = URL(string: validImageURL)
         }
         
+        if let validParticipants = dictionary["participants"] as? [String: Any] {
+            participants = validParticipants
+        }
     }
     
     

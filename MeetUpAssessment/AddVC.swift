@@ -13,6 +13,12 @@ import FirebaseAuth
 import FirebaseStorage
 import FirebaseDatabase
 
+protocol EventDelegate {
+    //1. create this protocol to setup custom delegatation and put every function that u want to use at others
+    func refreshDeletedEvent(eventID : String)
+    
+}
+
 class AddVC: UIViewController,UITextFieldDelegate {
 
     @IBOutlet weak var cancelButton: UIBarButtonItem!{
@@ -70,11 +76,11 @@ class AddVC: UIViewController,UITextFieldDelegate {
     
     @IBOutlet weak var naviBar: UINavigationBar!
     
+    var delegate : EventDelegate? //2. create the custom delegation
     let myActivityIndicator = UIActivityIndicatorView(activityIndicatorStyle: UIActivityIndicatorViewStyle.whiteLarge)
     let currentUserID = Auth.auth().currentUser?.uid
     var getName : String = ""
     var isImageSelected : Bool = false
-    var isImageUpdated : Bool = false
     let ref = Database.database().reference()
     let locationManager = CLLocationManager()
     let selfAnnotation = MKPointAnnotation()
@@ -83,6 +89,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
     var locationAddress : String?
     var getLocationLat : Double?
     var getLocationLong : Double?
+    var otherUserEventJoined : [UserProfile]? = []
     var getEditEventDetail : EventData?
     let datePicker = UIDatePicker()
     var selectedRow = 0 //for pickerview row
@@ -102,7 +109,6 @@ class AddVC: UIViewController,UITextFieldDelegate {
         
         picker.delegate = self
         picker.dataSource = self
-        
         
         imageView.isUserInteractionEnabled = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddVC.imagedTapped(sender:)))
@@ -124,12 +130,17 @@ class AddVC: UIViewController,UITextFieldDelegate {
             categoryTextField.text = getEditEventDetail?.eventCategory
             imageView.sd_setImage(with: getEditEventDetail?.imageURL)
             
-            if let coorLat = getEditEventDetail?.lat, let coorLong = getEditEventDetail?.long {
+            isImageSelected = false
+            
+            getLocationLat = getEditEventDetail?.lat
+            getLocationLong = getEditEventDetail?.long
+            locationAddress = getEditEventDetail?.address
+            
+            if let coorLat = getLocationLat, let coorLong = getLocationLong {
                 destination.coordinate = CLLocationCoordinate2DMake(coorLat, coorLong)
-                destination.title = getEditEventDetail?.address
+                destination.title = locationAddress
                 mapView.addAnnotation(destination)
             }
-        
             
             let span = MKCoordinateSpanMake(0.03, 0.03)
             let region = MKCoordinateRegionMake(destination.coordinate, span)
@@ -137,8 +148,6 @@ class AddVC: UIViewController,UITextFieldDelegate {
             
             doneButton.setTitle("Update", for: .normal)
         }
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -209,22 +218,33 @@ class AddVC: UIViewController,UITextFieldDelegate {
         
         let delete = UIAlertAction(title: "Delete", style: .destructive) { (action) in
             if let eventID = self.getEditEventDetail?.eid {
-                let eventRef = Database.database().reference().child("events").child(eventID)
-                eventRef.removeValue()
-                
-                if let currentUserID = self.getEditEventDetail?.userID {
-                    let userRef = Database.database().reference().child("users").child(currentUserID).child("eventCreated")
-                    userRef.removeValue()
+                let eventRef = Database.database().reference().child("events")
+                eventRef.child(eventID).observe(.value, with: { (snapshot) in
                     
-                    let userEventJoined = Database.database().reference().child("users").child(currentUserID).child("eventJoined")
-                    userEventJoined.child(eventID).removeValue()
-                }
+                    if let data = EventData(snapshot: snapshot){
+                        
+                        guard let participants = data.participants else { return }
+                        
+                        for(key,_) in participants {
+                            self.getOtherUserEventJoined(key)
+                        }
+                        
+                        //remove currentUser's eventJoined and eventCreated
+                        if let currentUserID = self.getEditEventDetail?.userID {
+                            let userRef = Database.database().reference().child("users").child(currentUserID).child("eventCreated")
+                            userRef.child(eventID).removeValue()
+                            
+                            let userEventJoined = Database.database().reference().child("users").child(currentUserID).child("eventJoined")
+                            userEventJoined.child(eventID).removeValue()
+                        }
+                    }
+                })
             }
             
-            let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
-            let mainVC = storyboard.instantiateViewController(withIdentifier: "MainVC") as! MainVC
-            
-            self.present(mainVC, animated: true, completion: nil)
+            //custom delegate to dismiss and send the eid to selectedEventVC
+            if let eid = self.getEditEventDetail?.eid {
+                self.delegate?.refreshDeletedEvent(eventID : eid)
+            }
         }
         
         let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -233,6 +253,27 @@ class AddVC: UIViewController,UITextFieldDelegate {
         alertController.addAction(cancel)
         
         present(alertController, animated: true, completion: nil)
+    }
+    
+    func getOtherUserEventJoined(_ otherUserID : String){
+        
+        let ref = Database.database().reference()
+        ref.child("users").child(otherUserID).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let otherUserDetail = UserProfile(snapshot: snapshot){
+                self.otherUserEventJoined?.append(otherUserDetail)
+            }
+    
+            //remove otherUsers' eventJoined
+            if let otherUsers = self.otherUserEventJoined {
+                if let eventID = self.getEditEventDetail?.eid {
+                    for otherUser in otherUsers{
+                        let deleteOtherUserEventJoined = Database.database().reference().child("users").child(otherUser.userID)
+                            deleteOtherUserEventJoined.child("eventJoined").child(eventID).removeValue()
+                    }
+                    ref.child("events").child(eventID).removeValue()
+                }
+            }
+        })
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
@@ -287,62 +328,90 @@ class AddVC: UIViewController,UITextFieldDelegate {
     
     func didTappedDoneButton(_ sender: Any){
         myActivityIndicator.startAnimating()
+        doneButton.isEnabled = false
+        cancelButton.isEnabled = false
         
         if doneButton.titleLabel?.text == "Done" {
             saveDetails()
         } else {
-            // do updateDetails()
-            
+            if isImageSelected == false {
+                updateDetails()
+            } else {
+                updatePictureAndDetails()
+            }
+        }
+    }
+    
+    func updatePictureAndDetails(){
+       
+        let storageRef = Storage.storage().reference()
+        let metadata = StorageMetadata()
+        metadata.contentType = "image/jpg"
+        
+        guard let data = UIImageJPEGRepresentation(imageView.image!, 0.8) else {
+            dismiss(animated: true, completion: nil)
+            return
         }
         
+        let uuid = UUID().uuidString
+        print(uuid)
+        
+        storageRef.child("\(uuid).jpg").putData(data, metadata: metadata) { (newMeta, error) in
+            if error != nil {
+                print(error!)
+            } else {
+                defer{
+                    self.dismiss(animated: true, completion: nil) //dismiss the view when done.
+                }
+                
+                if let foundError = error {
+                    print(foundError.localizedDescription)
+                    return
+                }
+                
+                guard let imageURL = newMeta?.downloadURLs?.first?.absoluteString else {
+                    return
+                }
+                
+                self.updatePictureAndDetails(imageURL) //pass in the imageURL in the function
+            }
+            self.myActivityIndicator.stopAnimating()
+        }
     }
     
     func updateDetails(){
+        guard
+            let uid = currentUserID,
+            let eid = getEditEventDetail?.eid,
+            let validTitle = titleTextField.text,
+            let validDescription = descriptionTextField.text,
+            let validStartAt = startAtTextField.text,
+            let validEndAt = endAtTextField.text,
+            let validCategory = categoryTextField.text
+            else { return }
+
+        let param : [String:Any] = ["userID" : uid,
+                                    "name" : self.getName,
+                                    "eventTitle" : validTitle,
+                                    "eventDescription" : validDescription,
+                                    "eventStartAt" : validStartAt,
+                                    "eventEndAt" : validEndAt,
+                                    "eventCategory" : validCategory,
+                                    "locationAddress": self.locationAddress ?? "",
+                                    "lat": self.getLocationLat ?? "",
+                                    "long": self.getLocationLong ?? ""]
         
-        if isImageSelected == false{
-            
-            warningAlert(warningMessage: "Please upload an event's image!")
-            
-        } else {
-            let storageRef = Storage.storage().reference()
-            let metadata = StorageMetadata()
-            metadata.contentType = "image/jpg"
-            
-            guard let data = UIImageJPEGRepresentation(imageView.image!, 0.8) else {
-                dismiss(animated: true, completion: nil)
-                return
-            }
-            
-            let uuid = UUID().uuidString
-            print(uuid)
-            
-            storageRef.child("\(uuid).jpg").putData(data, metadata: metadata) { (newMeta, error) in
-                if error != nil {
-                    print(error!)
-                } else {
-                    defer{
-                        self.dismiss(animated: true, completion: nil) //dismiss the view when done.
-                    }
-                    
-                    if let foundError = error {
-                        print(foundError.localizedDescription)
-                        return
-                    }
-                    
-                    guard let imageURL = newMeta?.downloadURLs?.first?.absoluteString else {
-                        return
-                    }
-                    
-                    self.storePictureAndDetails(imageURL) //pass in the imageURL in the function
-                }
-                self.myActivityIndicator.stopAnimating()
-            }
-        }
+        let ref = Database.database().reference().child("events")
+        ref.child(eid).updateChildValues(param)
+        
+        self.dismiss(animated: true, completion: nil)
+        self.myActivityIndicator.stopAnimating()
     }
     
     func updatePictureAndDetails(_ imageURL: String? = nil){
         guard
             let uid = currentUserID,
+            let eid = getEditEventDetail?.eid,
             let validTitle = titleTextField.text,
             let validDescription = descriptionTextField.text,
             let validStartAt = startAtTextField.text,
@@ -350,8 +419,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
             let validImageURL = imageURL,
             let validCategory = categoryTextField.text
             else { return }
-        
-        let now = Date()
+
         let param : [String:Any] = ["userID" : uid,
                                     "name" : self.getName,
                                     "eventTitle" : validTitle,
@@ -360,13 +428,12 @@ class AddVC: UIViewController,UITextFieldDelegate {
                                     "eventEndAt" : validEndAt,
                                     "eventCategory" : validCategory,
                                     "imageURL": validImageURL,
-                                    "timestamp": now.timeIntervalSince1970,
                                     "locationAddress": self.locationAddress ?? "",
                                     "lat": self.getLocationLat ?? "",
                                     "long": self.getLocationLong ?? ""]
         
         let ref = Database.database().reference().child("events")
-        ref.child(uid).updateChildValues(param)
+        ref.child(eid).updateChildValues(param)
     }
     
     func saveDetails(){
@@ -374,23 +441,23 @@ class AddVC: UIViewController,UITextFieldDelegate {
             
             warningAlert(warningMessage: "Please insert the title!")
             
-        } else if descriptionTextField.text == ""{
+        } else if descriptionTextField.text == "" {
             
             warningAlert(warningMessage: "Please insert description!")
             
-        } else if startAtTextField.text == ""{
+        } else if startAtTextField.text == "" {
             
             warningAlert(warningMessage: "Please insert event start date!")
             
-        } else if endAtTextField.text == ""{
+        } else if endAtTextField.text == "" {
             
             warningAlert(warningMessage: "Please insert event end date!")
             
-        } else if categoryTextField.text == ""{
+        } else if categoryTextField.text == "" {
             
             warningAlert(warningMessage: "Please insert category!")
             
-        } else if isImageSelected == false{
+        } else if isImageSelected == false {
             
             warningAlert(warningMessage: "Please upload an event's image!")
             
@@ -409,14 +476,20 @@ class AddVC: UIViewController,UITextFieldDelegate {
             
             storageRef.child("\(uuid).jpg").putData(data, metadata: metadata) { (newMeta, error) in
                 if error != nil {
+                    self.cancelButton.isEnabled = false
+                    self.doneButton.isEnabled = false
                     print(error!)
                 } else {
                     defer{
                         self.dismiss(animated: true, completion: nil) //dismiss the view when done.
+                        self.doneButton.isEnabled = true
+                        self.cancelButton.isEnabled = true
                     }
                     
                     if let foundError = error {
                         print(foundError.localizedDescription)
+                        self.doneButton.isEnabled = false
+                        self.cancelButton.isEnabled = false
                         return
                     }
                     
@@ -466,8 +539,8 @@ class AddVC: UIViewController,UITextFieldDelegate {
         let updateEventCreated = Database.database().reference().child("users").child(uid).child("eventCreated")
         updateEventCreated.updateChildValues([currentEID:true])
         
-        let updateEventJoined = Database.database().reference().child("users").child(uid).child("eventJoined").child(currentEID)
-        updateEventJoined.updateChildValues([uid:true])
+        let updateEventJoined = Database.database().reference().child("users").child(uid).child("eventJoined")
+        updateEventJoined.updateChildValues([currentEID:true])
         
         let updateEventParticipants = Database.database().reference().child("events").child(currentEID).child("participants")
         updateEventParticipants.updateChildValues([uid:true])
@@ -520,6 +593,8 @@ class AddVC: UIViewController,UITextFieldDelegate {
         let alertController = UIAlertController(title: "Error", message: warningMessage, preferredStyle: .alert)
         let ok = UIAlertAction(title: "Ok", style: .cancel, handler: nil)
         alertController.addAction(ok)
+        self.cancelButton.isEnabled = true
+        self.doneButton.isEnabled = true
         
         present(alertController, animated: true, completion: nil)
         self.myActivityIndicator.stopAnimating()
@@ -616,7 +691,6 @@ extension AddVC : UIImagePickerControllerDelegate, UINavigationControllerDelegat
         self.isImageSelected = true
         
         dismiss(animated: true, completion: nil)
-        
     }
 }
 
@@ -702,7 +776,6 @@ extension AddVC : MKMapViewDelegate{
         default:
             break
         }
-        
     }
     
     func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
@@ -715,8 +788,8 @@ extension AddVC : MKMapViewDelegate{
         let region = MKCoordinateRegionMake(centerCoor, span)
         mapView.setRegion(region, animated: true)
         
+        //so selectedAnnotation will get updated
         selectedAnnotation = view.annotation as! MKPointAnnotation
-        
     }
 }
 

@@ -49,33 +49,35 @@ class ProfileVC: UIViewController {
     var displayUserEventCreated : [EventData] = []
     var displayUserRSVP : [EventData] = []
     var providerStatus : String?
+    var refresher = UIRefreshControl()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        displayUserEventCreated = []
-        fetchEventsCreated()
-        //obeserveDelete()
-        
         checkEditButtonStatus()
+        
+
+        refresher.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
+        tableView.addSubview(refresher)
     }
     
-    func obeserveDelete() {
-        if let uid = Auth.auth().currentUser?.uid {
-            let ref = Database.database().reference()
-            ref.child("users").child(uid).child("eventJoined").observe(.childRemoved, with: { (snapshot) in
-                if let deletedIndex = self.displayUserRSVP.index(where: { (eventID) -> Bool in
-                    eventID.eid == snapshot.key
-                }) {
-                    self.displayUserRSVP.remove(at: deletedIndex)
-                    DispatchQueue.main.async {
-                        self.tableView.reloadData()
-                    }
-                    
-                } else {
-                    return
-                }
-            })
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.isNavigationBarHidden = true
+        
+        if segmentControl.selectedSegmentIndex == 0 {
+            displayUserEventCreated = []
+            fetchEventsCreated()
+            tableView.reloadData()
+
+        } else {
+            displayUserRSVP = []
+            fetchRSVP()
+            tableView.reloadData()
         }
     }
     
@@ -97,42 +99,42 @@ class ProfileVC: UIViewController {
         {
         case 0:
             displayUserEventCreated = []
-            let ref = Database.database().reference()
-            ref.child("events").removeAllObservers()
-            //obeserveDelete()
             fetchEventsCreated()
             tableView.reloadData()
         case 1:
             displayUserRSVP = []
-            let ref = Database.database().reference()
-            ref.child("events").removeAllObservers()
-            //obeserveDelete()
             fetchRSVP()
             tableView.reloadData()
         default:
             break;
         }
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.isNavigationBarHidden = true
+    func handleRefresh(){
+        refresher.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refresher.tintColor = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
+        let ref = Database.database().reference()
+        ref.child("events").removeAllObservers()
+        
+        if segmentControl.selectedSegmentIndex == 0 {
+            self.displayUserEventCreated = []
+            fetchEventsCreated()
+        } else {
+            self.displayUserRSVP = []
+            fetchRSVP()   
+        }
+        refresher.endRefreshing()
+        tableView.reloadData()
     }
     
     func fetchRSVP(){
      
         if let currentUserID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
-            ref.child("users").child(currentUserID).observe(.value, with: { (snapshot) in
+            ref.child("users").child(currentUserID).observeSingleEvent(of: .value, with: { (snapshot) in
                 if let userRSVP = UserProfile(snapshot: snapshot){
                     
                     guard let eventJoined = userRSVP.eventJoined else { return }
-                    
-                    self.displayUserRSVP = []
                     
                     for(key,_) in eventJoined {
                         
@@ -151,7 +153,9 @@ class ProfileVC: UIViewController {
             if let rsvpDetail = EventData(snapshot: snapshot){
                 self.displayUserRSVP.append(rsvpDetail)
                 self.displayUserRSVP.sort(by: {$0.timestamp > $1.timestamp})
-                self.tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         })
     }
@@ -160,7 +164,7 @@ class ProfileVC: UIViewController {
         
         if let currentUserID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
-            ref.child("users").child(currentUserID).observe(.value, with: { (snapshot) in
+            ref.child("users").child(currentUserID).observeSingleEvent(of: .value, with: { (snapshot) in
 
                 if let userProfile = UserProfile(snapshot: snapshot){
 
@@ -187,8 +191,6 @@ class ProfileVC: UIViewController {
                     
                     guard let eventDictionary = userProfile.eventCreated else {return}
                     
-                    self.displayUserEventCreated = []
-                    
                     for (key,_) in eventDictionary {
                         self.getEvent(key)
                     }
@@ -209,11 +211,11 @@ class ProfileVC: UIViewController {
             if let eventDetail = EventData(snapshot: snapshot){
                 self.displayUserEventCreated.append(eventDetail)
                 self.displayUserEventCreated.sort(by: {$0.timestamp > $1.timestamp})
-                self.tableView.reloadData()
+                DispatchQueue.main.async {
+                    self.tableView.reloadData()
+                }
             }
         })
-        
-        
     }
     
     func didTappedEditButton(_ sender : Any){
@@ -231,7 +233,7 @@ class ProfileVC: UIViewController {
         
         let signOut = UIAlertAction(title: "Log Out", style: .destructive) { (action) in
             let firebaseAuth = Auth.auth()
-            let loginManager = FBSDKLoginManager() //FB system logout
+            let loginManager = FBSDKLoginManager()
             
             do {
                 try firebaseAuth.signOut()
@@ -252,9 +254,7 @@ class ProfileVC: UIViewController {
         alertController.addAction(cancel)
         
         present(alertController, animated: true, completion: nil)
-        
     }
-
 }
 
 extension ProfileVC : UITableViewDataSource, UITableViewDelegate {
