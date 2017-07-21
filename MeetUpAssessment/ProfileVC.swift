@@ -56,7 +56,6 @@ class ProfileVC: UIViewController {
         
         checkEditButtonStatus()
         
-        
         refresher.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
         tableView.addSubview(refresher)
     }
@@ -172,7 +171,7 @@ class ProfileVC: UIViewController {
                     self.emailLabel.text = userProfile.email
                     
                     if userProfile.provider == "facebook.com" {
-                        self.providerImageView.image = UIImage(named: "facebook2")
+                        self.providerImageView.image = UIImage(named: "facebook3")
                         
                     } else {
                         self.providerImageView.image = UIImage(named: "email")

@@ -10,13 +10,9 @@ import UIKit
 
 class SearchCell: UITableViewCell {
     
-    
     @IBOutlet weak var searchCellImageView: UIImageView!
-
     @IBOutlet weak var searchCellTitleLabel: UILabel!
-    
     @IBOutlet weak var searchCellDescriptionLabel: UILabel!
-    
     
     override func awakeFromNib() {
         super.awakeFromNib()

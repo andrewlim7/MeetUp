@@ -124,6 +124,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
             determineCurrentLocation()
             
         } else {
+            
             naviBar.items?.first?.title = "Edit event detail"
             
             naviBar?.items?.first?.rightBarButtonItem = UIBarButtonItem(title: "Delete", style: .plain, target: self, action: #selector(AddVC.deleteEvent))
@@ -214,6 +215,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
         self.view.endEditing(true)
     }
     
+    //Delete event
     func deleteEvent(_ sender: Any){
         let alertController = UIAlertController(title: "Are you sure?", message: "You cannot retrieve this post after being deleted", preferredStyle: .alert)
         
@@ -275,15 +277,6 @@ class AddVC: UIViewController,UITextFieldDelegate {
                 }
             }
         })
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        titleTextField.resignFirstResponder()
-        descriptionTextField.resignFirstResponder()
-        startAtTextField.resignFirstResponder()
-        endAtTextField.resignFirstResponder()
-        categoryTextField.resignFirstResponder()
-        return true
     }
     
     func imagedTapped(sender: UIGestureRecognizer){
@@ -380,6 +373,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
         }
     }
     
+    //Update user details to DB
     func updateDetails(){
         guard
             let uid = currentUserID,
@@ -437,6 +431,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
         ref.child(eid).updateChildValues(param)
     }
     
+    //Save details to DB
     func saveDetails(){
         if titleTextField.text == "" {
             
@@ -552,9 +547,18 @@ class AddVC: UIViewController,UITextFieldDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.lightGray
+        
         
         view.addSubview(myActivityIndicator)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if textField == titleTextField {
+            descriptionTextField.becomeFirstResponder()
+        } else if textField == descriptionTextField{
+            startAtTextField.becomeFirstResponder()
+        }
+        return true
     }
     
     func openImagePicker(){

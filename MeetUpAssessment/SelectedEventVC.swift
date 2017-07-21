@@ -49,7 +49,6 @@ class SelectedEventVC: UIViewController, EventDelegate {
         super.viewDidLoad()
         
         if getEventDetail?.userID == currentUserID {
-            
             navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(SelectedEventVC.editEvent))
         }
         
@@ -60,6 +59,7 @@ class SelectedEventVC: UIViewController, EventDelegate {
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = false
         
+        //get the EID from custom Delegation to compare whether it is deleted
         if storeTempEventID == getEventDetail?.eid {
             
             let alertController = UIAlertController(title: "Error", message: "This event has removed", preferredStyle: .alert)
@@ -106,19 +106,16 @@ class SelectedEventVC: UIViewController, EventDelegate {
     }
     
     func participantsCount(){
-        
         let ref = Database.database().reference()
         if let eventID = getEventDetail?.eid{
             ref.child("events").child(eventID).child("participants").observe(.value, with: { (snapshot) in
                 
                 var count = 0
                 count += Int(snapshot.childrenCount)
-                self.totalParticipantLabel.text = "\(count) participant(s) are going"
-                
+                self.totalParticipantLabel.text = "Total participants: \(count)"
             })
         }
     }
-
     
     func editEvent(){
         let storyboard = UIStoryboard(name: "Main", bundle: Bundle.main)
@@ -179,6 +176,7 @@ class SelectedEventVC: UIViewController, EventDelegate {
         }
     }
     
+    //Custom delegation to receive the id from delete
     func refreshDeletedEvent(eventID: String) {
         storeTempEventID = eventID
         dismiss(animated: true, completion: nil)

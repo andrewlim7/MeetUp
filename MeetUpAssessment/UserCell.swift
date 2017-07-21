@@ -11,13 +11,18 @@ import UIKit
 class UserCell: UITableViewCell {
     
     @IBOutlet weak var cellImageView: UIImageView!
-
     @IBOutlet weak var cellTitleLabel: UILabel!
     @IBOutlet weak var cellDescriptionLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+    }
+    
+    override func prepareForReuse() {
+        cellImageView.image = nil
+        cellTitleLabel.text = nil
+        cellDescriptionLabel.text = nil
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

@@ -52,7 +52,6 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
         super.viewDidLoad()
         
         setupSpinner()
-        
     }
     
     override func didReceiveMemoryWarning() {
@@ -140,7 +139,6 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
                     } else {
                         let values : [String: Any] = result as! [String : Any]
                         
-                        
                         userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
                             if error != nil {
                                 print("\(String(describing: error))")
@@ -175,15 +173,12 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.lightGray
-        
         view.addSubview(myActivityIndicator)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == emailTextField {
             passwordTextField.becomeFirstResponder()
-            
         } else if textField == passwordTextField{
             passwordTextField.resignFirstResponder()
         }
@@ -198,6 +193,4 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
         present(alertController, animated: true, completion: nil)
         self.myActivityIndicator.stopAnimating()
     }
-    
-    
 }

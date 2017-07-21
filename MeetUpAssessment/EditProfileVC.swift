@@ -163,7 +163,6 @@ class EditProfileVC: UIViewController {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.lightGray
         
         view.addSubview(myActivityIndicator)
     }

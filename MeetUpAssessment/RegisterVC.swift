@@ -50,7 +50,7 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var signUpButton: UIButton!{
         didSet{
             signUpButton.addTarget(self, action: #selector(didTappedSignUpButton(_:)), for: .touchUpInside)
-            signUpButton.layer.cornerRadius = 15
+            signUpButton.layer.cornerRadius = 5
         }
     }
 
@@ -60,6 +60,7 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupSpinner()
+        
         self.navigationController?.setNavigationBarHidden(false, animated: false)
         
         imageView.isUserInteractionEnabled = true
@@ -81,7 +82,6 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             
             if self.view.frame.origin.y == 0 {
-                
                 self.view.frame.origin.y -= keyboardSize.height
             }
         }
@@ -92,7 +92,6 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
         if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
             
             if self.view.frame.origin.y != 0 {
-                
                 self.view.frame.origin.y += keyboardSize.height
             }
         }
@@ -213,7 +212,7 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.lightGray
+        
         
         view.addSubview(myActivityIndicator)
     }
@@ -264,7 +263,6 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
 
 extension RegisterVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
-    //media is album , photo is picture. rmb to allow it in plist
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) { //cancel button in photo
         self.isImageSelected = false
         dismiss(animated: true, completion: nil)
