@@ -10,18 +10,14 @@ import UIKit
 import Firebase
 import FirebaseAuth
 
-class EditProfileVC: UIViewController,UITextFieldDelegate {
-
+class EditProfileVC: UIViewController {
+    
     @IBOutlet weak var cancelButton: UIBarButtonItem!{
         didSet{
             cancelButton.target = self
             cancelButton.action = #selector(didTappedCancelButton(_:))
         }
     }
-    
-    @IBOutlet weak var newPasswordTextField: UITextField!
-    
-    @IBOutlet weak var confirmPasswordTextField: UITextField!
     
     @IBOutlet weak var updateButton: UIButton!{
         didSet{
@@ -51,27 +47,12 @@ class EditProfileVC: UIViewController,UITextFieldDelegate {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RegisterVC.imagedTapped(sender:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(tapGestureRecognizer)
-
+        
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func authenticateUser() {
-//        let user = Auth.auth().currentUser
-//        let credential: AuthCredential
-//        
-//        // Prompt the user to re-provide their sign-in credentials
-//        
-//        user?.reauthenticate(with: credential) { error in
-//            if let error = error {
-//                self.warningAlert(title: "Error!", warningMessage: (error.localizedDescription))
-//            } else {
-//                // User re-authenticated.
-//            }
-//        }
     }
     
     func imagedTapped(sender: UITapGestureRecognizer){
@@ -151,45 +132,19 @@ class EditProfileVC: UIViewController,UITextFieldDelegate {
             }
             self.myActivityIndicator.stopAnimating()
         }
-
+        
     }
     
-    func updateUserAccount(_ newPassword: String){
-        
-        Auth.auth().currentUser?.updatePassword(to: newPasswordTextField.text!, completion: { (error) in
-            
-            if let error = error {
-                self.warningAlert(title: "Error!", warningMessage: (error.localizedDescription))
-            } else {
-                self.warningAlert(title: "Success!", warningMessage: "Password successfully reset!")
-            }
-            self.myActivityIndicator.stopAnimating()
-            
-            self.dismiss(animated: true, completion: nil)
-        })
-        
-    }
-
     func didTappedCancelButton(_ sender: Any){
         dismiss(animated: true, completion: nil)
     }
-
+    
     func didTappedUpdateButton(_ sender: Any){
         myActivityIndicator.startAnimating()
         
         if isImageSelected == true {
             updateUserProfileImage()
         }
-        
-        if newPasswordTextField.text != "" {
-            
-            if newPasswordTextField.text != confirmPasswordTextField.text {
-                warningAlert(title: "Error", warningMessage: "Please enter your password and confirm password correctly!")
-            } else {
-                updateUserAccount(newPasswordTextField.text!)
-            }
-        }
-        
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -208,21 +163,11 @@ class EditProfileVC: UIViewController,UITextFieldDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.gray
+        myActivityIndicator.backgroundColor = UIColor.lightGray
         
         view.addSubview(myActivityIndicator)
     }
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if textField ==  newPasswordTextField {
-            confirmPasswordTextField.becomeFirstResponder()
-            
-        } else if textField == confirmPasswordTextField{
-            confirmPasswordTextField.resignFirstResponder()
-        }
-        return true
-    }
-
 }
 
 extension EditProfileVC : UIImagePickerControllerDelegate, UINavigationControllerDelegate {

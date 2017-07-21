@@ -38,6 +38,7 @@ class SelectedEventVC: UIViewController, EventDelegate {
     @IBOutlet weak var categoryLabel: UILabel!
     
     @IBOutlet weak var totalParticipantLabel: UILabel!
+    
     var getEventDetail : EventData?
     var storeTempEventID : String?
     var isJoined : Bool = false

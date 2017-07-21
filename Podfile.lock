@@ -55,6 +55,7 @@ PODS:
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
+  - TextFieldEffects (1.3.3)
 
 DEPENDENCIES:
   - FBSDKCoreKit
@@ -65,6 +66,7 @@ DEPENDENCIES:
   - Firebase/Database
   - Firebase/Storage
   - SDWebImage
+  - TextFieldEffects
 
 SPEC CHECKSUMS:
   Bolts: 8a7995239dbe724f9cba2248b766d48b7ebdd322
@@ -81,7 +83,8 @@ SPEC CHECKSUMS:
   GoogleToolboxForMac: 8e329f1b599f2512c6b10676d45736bcc2cbbeb0
   GTMSessionFetcher: 30d874b96d0d76028f61fbd122801e3f030d47db
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  TextFieldEffects: 8706f53525f1ce51c8921b7af32237caab50c467
 
-PODFILE CHECKSUM: ca8d1bc004a6303a2ac9c5565ae6065fe9e3a81d
+PODFILE CHECKSUM: bc1619578cf2551d924c25c94340e10f304cf4f8
 
 COCOAPODS: 1.2.1

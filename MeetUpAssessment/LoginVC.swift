@@ -15,14 +15,12 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!{
         didSet{
-            emailTextField.placeholder = "Insert email address"
             emailTextField.delegate = self
         }
     }
     
     @IBOutlet weak var passwordTextField: UITextField!{
         didSet{
-            passwordTextField.placeholder = "Insert password"
             passwordTextField.isSecureTextEntry = true
             passwordTextField.delegate = self
             passwordTextField.returnKeyType = .done
@@ -32,7 +30,7 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
     @IBOutlet weak var loginButton: UIButton!{
         didSet{
             loginButton.addTarget(self, action: #selector(didTappedLoginButton(_:)), for: .touchUpInside)
-            loginButton.layer.cornerRadius = 10.0
+            loginButton.layer.cornerRadius = 5.0
         }
     }
     
@@ -52,18 +50,23 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupSpinner()
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.setNavigationBarHidden(true, animated: true)
+        navigationController?.isNavigationBarHidden = false
+        navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        navigationController?.navigationBar.shadowImage = UIImage()
+        navigationController?.navigationBar.isTranslucent = true
+        navigationController?.view.backgroundColor = .clear
+        navigationItem.backBarButtonItem = UIBarButtonItem(title:"", style:.plain, target:nil, action:nil)
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -156,7 +159,7 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
             })
         }
     }
-
+    
     func loginButtonDidLogOut(_ loginButton: FBSDKLoginButton!) {
         print("Facebook logout successfully!")
         warningAlert(warningMessage: "Facebook logout successfully!")
@@ -172,7 +175,7 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.gray
+        myActivityIndicator.backgroundColor = UIColor.lightGray
         
         view.addSubview(myActivityIndicator)
     }
@@ -194,8 +197,7 @@ class LoginVC: UIViewController, UITextFieldDelegate, FBSDKLoginButtonDelegate {
         
         present(alertController, animated: true, completion: nil)
         self.myActivityIndicator.stopAnimating()
-        
     }
-
-
+    
+    
 }

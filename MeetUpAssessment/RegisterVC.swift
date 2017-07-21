@@ -23,21 +23,18 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var nameTextField: UITextField!{
         didSet{
-            nameTextField.placeholder = "Insert name"
             nameTextField.delegate = self
         }
     }
     
     @IBOutlet weak var emailTextField: UITextField!{
         didSet{
-            emailTextField.placeholder = "Insert email address"
             emailTextField.delegate = self
         }
     }
     
     @IBOutlet weak var passwordTextField: UITextField!{
         didSet{
-            passwordTextField.placeholder = "Insert password"
             passwordTextField.isSecureTextEntry = true
             passwordTextField.delegate = self
         }
@@ -45,7 +42,6 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var confirmPasswordTextField: UITextField!{
         didSet{
-            confirmPasswordTextField.placeholder = "Insert confirm password"
             confirmPasswordTextField.isSecureTextEntry = true
             confirmPasswordTextField.delegate = self
         }
@@ -65,17 +61,42 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         setupSpinner()
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationItem.title = "Registration"
         
         imageView.isUserInteractionEnabled = true
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(RegisterVC.imagedTapped(sender:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func keyboardWillShow(notification: NSNotification) {
+        
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            
+            if self.view.frame.origin.y == 0 {
+                
+                self.view.frame.origin.y -= keyboardSize.height
+            }
+        }
+    }
+    
+    func keyboardWillHide(notification: NSNotification) {
+        
+        if let keyboardSize = (notification.userInfo?[UIKeyboardFrameBeginUserInfoKey] as? NSValue)?.cgRectValue {
+            
+            if self.view.frame.origin.y != 0 {
+                
+                self.view.frame.origin.y += keyboardSize.height
+            }
+        }
+        
     }
     
     func imagedTapped(sender: UITapGestureRecognizer){
@@ -192,7 +213,7 @@ class RegisterVC: UIViewController, UITextFieldDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.gray
+        myActivityIndicator.backgroundColor = UIColor.lightGray
         
         view.addSubview(myActivityIndicator)
     }

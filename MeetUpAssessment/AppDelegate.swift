@@ -28,6 +28,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Auth.auth().addStateDidChangeListener { (auth, user) in
             self.handleUser(user)
         }
+        
+    
+        UINavigationBar.appearance().isTranslucent = true
+
 
         
         return true

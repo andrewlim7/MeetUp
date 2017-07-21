@@ -30,7 +30,7 @@ class ProfileVC: UIViewController {
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var emailLabel: UILabel!
     @IBOutlet weak var providerImageView: UIImageView!
-
+    
     
     @IBOutlet weak var segmentControl: UISegmentedControl!{
         didSet{
@@ -50,13 +50,13 @@ class ProfileVC: UIViewController {
     var displayUserRSVP : [EventData] = []
     var providerStatus : String?
     var refresher = UIRefreshControl()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         checkEditButtonStatus()
         
-
+        
         refresher.addTarget(self, action: #selector(handleRefresh), for: UIControlEvents.valueChanged)
         tableView.addSubview(refresher)
     }
@@ -73,7 +73,7 @@ class ProfileVC: UIViewController {
             displayUserEventCreated = []
             fetchEventsCreated()
             tableView.reloadData()
-
+            
         } else {
             displayUserRSVP = []
             fetchRSVP()
@@ -121,14 +121,14 @@ class ProfileVC: UIViewController {
             fetchEventsCreated()
         } else {
             self.displayUserRSVP = []
-            fetchRSVP()   
+            fetchRSVP()
         }
         refresher.endRefreshing()
         tableView.reloadData()
     }
     
     func fetchRSVP(){
-     
+        
         if let currentUserID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
             ref.child("users").child(currentUserID).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -165,15 +165,15 @@ class ProfileVC: UIViewController {
         if let currentUserID = Auth.auth().currentUser?.uid {
             let ref = Database.database().reference()
             ref.child("users").child(currentUserID).observeSingleEvent(of: .value, with: { (snapshot) in
-
+                
                 if let userProfile = UserProfile(snapshot: snapshot){
-
+                    
                     self.nameLabel.text = userProfile.name
                     self.emailLabel.text = userProfile.email
                     
                     if userProfile.provider == "facebook.com" {
-                        self.providerImageView.image = UIImage(named: "facebook")
-
+                        self.providerImageView.image = UIImage(named: "facebook2")
+                        
                     } else {
                         self.providerImageView.image = UIImage(named: "email")
                     }
@@ -227,7 +227,7 @@ class ProfileVC: UIViewController {
         
         present(editProfileVC, animated: true, completion: nil)
     }
-
+    
     func didTappedSettingButton(_ sender : Any){
         let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         

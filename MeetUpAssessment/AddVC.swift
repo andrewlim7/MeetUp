@@ -20,7 +20,7 @@ protocol EventDelegate {
 }
 
 class AddVC: UIViewController,UITextFieldDelegate {
-
+    
     @IBOutlet weak var cancelButton: UIBarButtonItem!{
         didSet{
             cancelButton.target = self
@@ -74,6 +74,9 @@ class AddVC: UIViewController,UITextFieldDelegate {
         }
     }
     
+    
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     @IBOutlet weak var naviBar: UINavigationBar!
     
     var delegate : EventDelegate? //2. create the custom delegation
@@ -85,7 +88,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
     let locationManager = CLLocationManager()
     let selfAnnotation = MKPointAnnotation()
     var selectedAnnotation = MKPointAnnotation()
-    let destination = MKPointAnnotation() 
+    let destination = MKPointAnnotation()
     var locationAddress : String?
     var getLocationLat : Double?
     var getLocationLong : Double?
@@ -100,7 +103,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         setupSpinner()
         showStartDatePicker()
         showEndDatePicker()
@@ -114,6 +117,8 @@ class AddVC: UIViewController,UITextFieldDelegate {
         let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(AddVC.imagedTapped(sender:)))
         tapGestureRecognizer.numberOfTapsRequired = 1
         imageView.addGestureRecognizer(tapGestureRecognizer)
+        
+        scrollView.keyboardDismissMode = .onDrag
         
         if getEditEventDetail == nil {
             determineCurrentLocation()
@@ -149,14 +154,10 @@ class AddVC: UIViewController,UITextFieldDelegate {
             doneButton.setTitle("Update", for: .normal)
         }
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
     }
     
     func showStartDatePicker(){
@@ -262,13 +263,13 @@ class AddVC: UIViewController,UITextFieldDelegate {
             if let otherUserDetail = UserProfile(snapshot: snapshot){
                 self.otherUserEventJoined?.append(otherUserDetail)
             }
-    
+            
             //remove otherUsers' eventJoined
             if let otherUsers = self.otherUserEventJoined {
                 if let eventID = self.getEditEventDetail?.eid {
                     for otherUser in otherUsers{
                         let deleteOtherUserEventJoined = Database.database().reference().child("users").child(otherUser.userID)
-                            deleteOtherUserEventJoined.child("eventJoined").child(eventID).removeValue()
+                        deleteOtherUserEventJoined.child("eventJoined").child(eventID).removeValue()
                     }
                     ref.child("events").child(eventID).removeValue()
                 }
@@ -343,7 +344,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
     }
     
     func updatePictureAndDetails(){
-       
+        
         let storageRef = Storage.storage().reference()
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpg"
@@ -389,7 +390,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
             let validEndAt = endAtTextField.text,
             let validCategory = categoryTextField.text
             else { return }
-
+        
         let param : [String:Any] = ["userID" : uid,
                                     "name" : self.getName,
                                     "eventTitle" : validTitle,
@@ -419,7 +420,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
             let validImageURL = imageURL,
             let validCategory = categoryTextField.text
             else { return }
-
+        
         let param : [String:Any] = ["userID" : uid,
                                     "name" : self.getName,
                                     "eventTitle" : validTitle,
@@ -551,7 +552,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
         myActivityIndicator.center = view.center
         myActivityIndicator.hidesWhenStopped = true
         myActivityIndicator.color = UIColor(red:0.25, green:0.72, blue:0.85, alpha:1.0)
-        myActivityIndicator.backgroundColor = UIColor.gray
+        myActivityIndicator.backgroundColor = UIColor.lightGray
         
         view.addSubview(myActivityIndicator)
     }
@@ -644,7 +645,7 @@ class AddVC: UIViewController,UITextFieldDelegate {
         categoryTextField.inputView = pickerView
         categoryTextField.inputAccessoryView = toolBar
     }
-
+    
     func donePickerView(){
         categoryTextField.text = pickerArray[selectedRow]
         categoryTextField.resignFirstResponder()
@@ -721,7 +722,7 @@ extension AddVC : CLLocationManagerDelegate{
             let currentLocation = CLLocation(latitude: lat, longitude: long)
             self.loadPlaceMark(location: currentLocation)
         }
-
+        
         let locValue : CLLocationCoordinate2D = coor
         let span = MKCoordinateSpanMake(0.03, 0.03)
         let region = MKCoordinateRegion(center: locValue, span: span)
@@ -733,7 +734,7 @@ extension AddVC : CLLocationManagerDelegate{
 
 extension AddVC : MKMapViewDelegate{
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
-
+        
         let pinIdentifier = "pin"
         
         let pinView = mapView.dequeueReusableAnnotationView(withIdentifier: pinIdentifier)
@@ -749,7 +750,7 @@ extension AddVC : MKMapViewDelegate{
         }
         
         return pinView
-
+        
     }
     
     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationViewDragState, fromOldState oldState: MKAnnotationViewDragState) {
@@ -758,19 +759,19 @@ extension AddVC : MKMapViewDelegate{
             
         case .starting:
             print("dragging")
-        
+            
         case .ending, .canceling:
             guard
                 let lat = view.annotation?.coordinate.latitude,
                 let long = view.annotation?.coordinate.longitude
-            
-            else { return }
+                
+                else { return }
             
             let coordinates = CLLocation(latitude: lat, longitude: long)
             
             getLocationLat = lat
             getLocationLong = long
-
+            
             self.loadPlaceMark(location: coordinates)
             
         default:
